@@ -5,6 +5,9 @@
 using namespace std;
 
 Edge::Edge() {
-	this->firstP = 0;
-	this->secondP = 0;
+	this->weight = 0;
+}
+
+int Edge::getWeight() {
+	return this->weight;
 }

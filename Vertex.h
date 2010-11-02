@@ -1,9 +1,12 @@
 #pragma once
 
-#include <stdio.h>
-#include <tchar.h>
-#include <iostream>
-#include <string>
-#include <iomanip>
+#include "Base.h"
 
 using namespace std;
+
+class Vertex : public Base {
+
+
+
+
+};

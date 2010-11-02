@@ -1,5 +1,7 @@
 #pragma once
 
+#define PSEUDO NULL;
+
 #include <stdio.h>
 #include <tchar.h>
 #include <iostream>
@@ -9,8 +11,7 @@ using namespace std;
 
 class Base {
 public:
-	//Base();
-	//virtual ~Base();
+	Base();
 	Base* getFirstP();
 	Base* getSecondP();
 	void setFirstP(Base* first);

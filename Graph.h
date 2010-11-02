@@ -1,9 +1,19 @@
 #pragma once
 
-#include <stdio.h>
-#include <tchar.h>
-#include <iostream>
-#include <string>
-#include <iomanip>
-#include "Graph.h"
+#include "Edge.h"
+#include "Vertex.h"
+
+class Graph {
+public:
+	Graph();
+	~Graph();
+	Vertex* getFirstVertex();
+	Vertex* getTreeRoot();
+	void InsVertex(Vertex* vertex);
+	void InsEdge(Vertex* fromVertex, Vertex* toVertex);
+
+private:
+	Vertex* firstVertex;
+	Vertex* treeRoot;
+};
 
