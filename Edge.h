@@ -6,8 +6,9 @@ using namespace std;
 class Edge : public Base {
 public:
 	Edge();
+	Edge(int weight);
 	int getWeight();
-	//virtual ~Edge(void);
+	void setWeight(int weight);
 
 private:
 	int weight;

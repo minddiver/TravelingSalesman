@@ -1,10 +1,10 @@
 #pragma once
 #include "Base.h"
-//using namespace std;
 
 Base::Base() {
 	this->firstP = PSEUDO;
 	this->secondP = PSEUDO;
+	this->flag = false;
 }
 
 Base* Base::getFirstP() {
@@ -21,4 +21,12 @@ void Base::setFirstP(Base *first) {
 
 void Base::setSecondP(Base *second) {
 	this->secondP;
+}
+
+bool Base::getFlag() {
+	return this->flag;
+}
+
+void Base::setFlag(bool flag) {
+	this->flag = flag;
 }

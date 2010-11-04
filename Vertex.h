@@ -4,8 +4,16 @@
 
 using namespace std;
 
-class Vertex : public Base {
 
+
+class Vertex : public Base {
+public:
+	Vertex();
+	string getLabel();
+	void setLabel(string label);
+
+private:
+	string label;
 
 
 

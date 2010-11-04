@@ -9,6 +9,10 @@
 #include <iomanip>
 using namespace std;
 
+/*
+Der erste Zeiger zeigt immer auf einen Knoten.
+Der zweite Zeiger zeigt immer auf eine Ecke.
+*/
 class Base {
 public:
 	Base();
@@ -16,8 +20,10 @@ public:
 	Base* getSecondP();
 	void setFirstP(Base* first);
 	void setSecondP(Base* second);
+	bool getFlag();
+	void setFlag(bool flag);
 protected:
 	Base* firstP;
 	Base* secondP;
-	
+	bool flag;
 };
