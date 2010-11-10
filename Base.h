@@ -20,10 +20,7 @@ public:
 	Base* getSecondP();
 	void setFirstP(Base* first);
 	void setSecondP(Base* second);
-	bool getFlag();
-	void setFlag(bool flag);
 protected:
 	Base* firstP;
 	Base* secondP;
-	bool flag;
 };

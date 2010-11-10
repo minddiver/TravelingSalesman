@@ -59,14 +59,48 @@ Graph::~Graph() {
 	// TBD: Alle erzeugten Strukturen löschen
 }
 
+// TBD: Kodierung der bereits durchlaufenen Kanten/Ecken über ein Bit-Array, wobei eine
+// 1 im Array bedeutet, dass die entsprechende Kante/Ecke markiert ist.
 void Graph::Prim() {
+	// Arrays für Kanten/Ecken anlegen:
+	// Ecken werden nach der Reihenfolge in der Grpahendarstellung kodiert.
+	// Kanten 
+
+	// Ecken-Array vorbereiten
+	Base* tmpVertex = this->firstVertex;
+	Base* tmpEdge;
+	int vCount = 0;		// Der Zeiger ist bereits auf der 1. Ecke! 
+
+	/*	
+		vCount gibt den höchsten Exponenten der 2^vCount-Darstellung an.
+		Eine Ecke -> 1bit -> Darstellung<=1 -> 2^0	(001)
+		Zwei Ecken -> 2bit -> Darstellung <=2 -> 2^1 (010)
+		Drei Ecken -> 3bit -> Darstellung <=4 -> 2^2 (100)
+
+		Um rauszufinden, ob die Ecke Nr. x (x fängt bei 0 an) markiert ist, reicht ein (markedVertices & 2^x) > 0?.
+		Bei dieser Darstellung muss der Graph durchlaufen werden, um erst die Nr. der fraglichen Ecke herauszufinden.
+	*/
+
+	/*
+		Alternative Darstellung: Ein statisches (aber evtl. dynamisch wachsendes) Array mit Zeigern auf die markierten Ecken.
+		Ein analoges Array für Kanten.
+		Die Zahl der Kanten in einem vollständigen Graphen ist n(n-1)/2, d.h. es gibt bei 100 Ecken 4950 Kanten.
+		
+		Speicherbedarf: 100*size(int) + 4950*size(int) bzw. (n + n(n+1)/2)*size(int) (oder size(long))
+	*/
+
+	// Anzahl Ecken ermitteln
+	while (tmpVertex->getFirstP != PSEUDO) {
+		tmpVertex = tmpVertex->getFirstP;
+		vCount++;
+	}
+	int markedVertices = 2^(vCount+1)
+
 	Edge* vMinWeight;
 	Edge* vTmpWeight;
 	int iMinWeight = 10000;
 	int iTmpWeight;
 	Node* tmpNode = new Node(this->firstVertex);
-	Base* tmpVertex = this->firstVertex;
-	Base* tmpEdge;
 	this->firstVertex->setFlag(true);
 	this->treeRoot = tmpNode;
 	
@@ -90,7 +124,7 @@ void Graph::Prim() {
 /*	Findet zu einem Knoten die Kante mit der minimalen Länge.
 	Rückgabewert: Kante mit der minimalen Länge.
 */
-Base* Graph::minWeightVertex(Base *vertex) {
+Base* Graph::minWeightEdge(Base *vertex) {
 	Base* tmpEdge;
 	Base* minWeight = PSEUDO;
 	int tmpWeight;

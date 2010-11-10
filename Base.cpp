@@ -4,7 +4,6 @@
 Base::Base() {
 	this->firstP = PSEUDO;
 	this->secondP = PSEUDO;
-	this->flag = false;
 }
 
 Base* Base::getFirstP() {
@@ -23,10 +22,3 @@ void Base::setSecondP(Base *second) {
 	this->secondP;
 }
 
-bool Base::getFlag() {
-	return this->flag;
-}
-
-void Base::setFlag(bool flag) {
-	this->flag = flag;
-}
