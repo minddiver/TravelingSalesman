@@ -1,5 +1,5 @@
 #pragma once
-
+#define PSEUDO NULL;
 #include "Base.h"
 
 using namespace std;
@@ -9,11 +9,13 @@ using namespace std;
 class Vertex : public Base {
 public:
 	Vertex();
-	string getLabel();
-	void setLabel(string label);
+	~Vertex();
+	Vertex(char* label);
+	char * getLabel();
+	void setLabel(char * label);
 
 private:
-	string label;
+	char * label;
 
 
 

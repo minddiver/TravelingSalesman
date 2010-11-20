@@ -3,14 +3,23 @@
 #include "Vertex.h"
 
 Vertex::Vertex() {
-	this->label = "";
+	this->label = NULL;
 }
 
-string Vertex::getLabel() {
+Vertex::Vertex(char * label) {
+	this->label = label;
+}
+
+Vertex::~Vertex() {
+	if (this->label != NULL)
+		delete this->label;
+}
+
+char * Vertex::getLabel() {
 	return this->label;
 }
 
-void Vertex::setLabel(std::string label) {
+void Vertex::setLabel(char * label) {
 	this->label = label;
 }
 

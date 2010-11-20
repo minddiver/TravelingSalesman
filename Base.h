@@ -18,9 +18,12 @@ public:
 	Base();
 	Base* getFirstP();
 	Base* getSecondP();
+	bool isMarked();
 	void setFirstP(Base* first);
 	void setSecondP(Base* second);
-protected:
+	void setMarked(bool marked);
+private:
 	Base* firstP;
 	Base* secondP;
+	bool mark;
 };
