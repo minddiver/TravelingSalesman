@@ -124,9 +124,11 @@ void Graph::moveEdge(Base *baseVertex, Base *edge) {
 }
 
 void Graph::Cycle() {
-	Base* currentVertex = this->treeRoot;
+	Base* start = this->treeRoot;
+	cout << ((Vertex*)start)->getLabel() << "   " << "0 km" << endl;
 	Base* last;
-	last = go(currentVertex);
+	last = go(start);
+	cout << ((Vertex*)start)->getLabel() << "   " << weightBetween(last, start) << " km" << endl;
 }
 
 Base* Graph::go(Base *vertex) {
