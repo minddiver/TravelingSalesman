@@ -182,10 +182,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Node.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\Vertex.cpp"
 				>
 			</File>
@@ -205,10 +201,6 @@
 			</File>
 			<File
 				RelativePath=".\Graph.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Node.h"
 				>
 			</File>
 			<File
