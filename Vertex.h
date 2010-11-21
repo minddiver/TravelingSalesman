@@ -10,12 +10,12 @@ class Vertex : public Base {
 public:
 	Vertex();
 	~Vertex();
-	Vertex(char* label);
-	char * getLabel();
-	void setLabel(char * label);
+	Vertex(string label);
+	string getLabel();
+	void setLabel(string label);
 
 private:
-	char * label;
+	string label;
 
 
 

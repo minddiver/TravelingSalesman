@@ -7,6 +7,14 @@ Base::Base() {
 	this->mark = false;
 }
 
+Base::~Base() {
+	if(this->firstP != NULL)
+		delete this->firstP;
+
+	if(this->secondP != NULL)
+		delete this->secondP;
+}
+
 Base* Base::getFirstP() {
 	return this->firstP;
 }

@@ -1,5 +1,10 @@
-
 /Debug
 /Release
+<<<<<<< HEAD
 Handlungsreisender.vcproj.DURA.WD.user
 Handlungsreisender.suo
+=======
+*.ncb
+*.suo
+*.user
+>>>>>>> 0bfa829ded1b20282f7ad7886f63a15397180d03
