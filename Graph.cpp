@@ -53,71 +53,11 @@ Graph::~Graph() {
 	// TBD: Alle erzeugten Strukturen löschen
 }
 
-// TBD: Kodierung der bereits durchlaufenen Kanten/Ecken über ein Bit-Array, wobei eine
-// 1 im Array bedeutet, dass die entsprechende Kante/Ecke markiert ist.
-//Alter code:
-	//// Arrays für Kanten/Ecken anlegen:
-	//// Ecken werden nach der Reihenfolge in der Grpahendarstellung kodiert.
-	//// Kanten 
-
-	//// Ecken-Array vorbereiten
-	//Base* tmpVertex = this->firstVertex;
-	//Base* tmpEdge;
-	//int vCount = 0;		// Der Zeiger ist bereits auf der 1. Ecke! 
-
-	///*	
-	//	vCount gibt den höchsten Exponenten der 2^vCount-Darstellung an.
-	//	Eine Ecke -> 1bit -> Darstellung<=1 -> 2^0	(001)
-	//	Zwei Ecken -> 2bit -> Darstellung <=2 -> 2^1 (010)
-	//	Drei Ecken -> 3bit -> Darstellung <=4 -> 2^2 (100)
-
-	//	Um rauszufinden, ob die Ecke Nr. x (x fängt bei 0 an) markiert ist, reicht ein (markedVertices & 2^x) > 0?.
-	//	Bei dieser Darstellung muss der Graph durchlaufen werden, um erst die Nr. der fraglichen Ecke herauszufinden.
-	//*/
-
-	///*
-	//	Alternative Darstellung: Ein statisches (aber evtl. dynamisch wachsendes) Array mit Zeigern auf die markierten Ecken.
-	//	Ein analoges Array für Kanten.
-	//	Die Zahl der Kanten in einem vollständigen Graphen ist n(n-1)/2, d.h. es gibt bei 100 Ecken 4950 Kanten.
-	//	
-	//	Speicherbedarf: 100*size(int) + 4950*size(int) bzw. (n + n(n+1)/2)*size(int) (oder size(long))
-	//*/
-
-	//// Anzahl Ecken ermitteln
-	//while (tmpVertex->getFirstP != PSEUDO) {
-	//	tmpVertex = tmpVertex->getFirstP;
-	//	vCount++;
-	//}
-	//int markedVertices = 2^(vCount+1)
-
-	//Edge* vMinWeight;
-	//Edge* vTmpWeight;
-	//int iMinWeight = 10000;
-	//int iTmpWeight;
-	//Node* tmpNode = new Node(this->firstVertex);
-	//this->firstVertex->setFlag(true);
-	//this->treeRoot = tmpNode;
-	//
-	//// Kante mit der minimalen Länge für alle markierten Knoten suchen.
-	//while (tmpVertex != PSEUDO) {
-	//	if (tmpVertex->getFlag() == true) {
-	//		vTmpWeight = minWeightEdge(tmpVertex);
-	//		iTmpWeight = minWeight->getWeight();
-	//		if (iTmpWeight < iMinWeight) {
-	//			iMinWeight = iTmpWeight;
-	//			vMinWeight = vTmpWeight;
-	//		}
-	//	}
-	//	tmpVertex = tmpVertex->getFirstP();
-	//}
-	//// Kante der minimalen Länge gefunden. In den Baum einfügen.
-
-
 void Graph::Prim() {
-	Base * p;
-	Base * minEdgeFromHere;
-	Base * minEdge = NULL;
-	Base * e;
+	Base* p;
+	Base* minEdgeFromHere;
+	Base* minEdge = NULL;
+	Base* e;
 	bool unmarkedFound = true;
 	
 	p = this->firstVertex;
@@ -126,16 +66,20 @@ void Graph::Prim() {
 	while (unmarkedFound) {
 		unmarkedFound = false;
 		p = this->firstVertex;
+		minEdge = NULL;		// Korrigiert: reset!
 		while (p != NULL) {
 			if (p->isMarked()) {	
 				e = p->getSecondP();
+				// kleinste Kante suchen
 				while (e != NULL) {
+					// Erstmal eine beliebige als kleinste annehmen
 					if (minEdge == NULL) {
 						if (!e->getFirstP()->isMarked()) {
 							minEdge = e;
 							minEdgeFromHere = p;
 						}
 					}
+					// Vergleichen und wenn kleiner, neue kleinste Ecke setzen
 					else {
 						if ((!e->getFirstP()->isMarked()) && (((Edge*)e)->getWeight() < ((Edge*)minEdge)->getWeight())) {
 							minEdge = e;
@@ -151,45 +95,83 @@ void Graph::Prim() {
 			p = p->getFirstP();
 		}
 		minEdge->setMarked(true);
+		moveEdge(minEdgeFromHere, minEdge);		// Ans Ende der markierten Kanten einfügen
 		minEdge->getFirstP()->setMarked(true);
 		
-		e = minEdge->getFirstP();
+		// Die umgekehrte Kante auch markieren (Euler-Bedingung)
+		e = minEdge->getFirstP()->getSecondP();		// Korrigiert: ->getSecondP(), da bei einer Ecke angefangen werden muss
 		while (e != NULL) {
 			if (e->getFirstP() == minEdgeFromHere) {
 				e->setMarked(true);
+				moveEdge(minEdge->getFirstP(), e);		// Und richtig einreihen
+				break;
 			}
 			e = e->getSecondP();
 		}
 	}
-
-	//TODO: Liste durchlaufen, 
-	// nicht markierte Ecken suchen, 
-	// minimale Kante zu einer nicht markierten Ecke bestimmen
-	// v = firstV;
-	// While v->getFirst != NULL (solange nicht das Ende erreicht)
-	// if (! m->isMarked)
-	// Kantenliste durchlaufen, alle Gewichte zu den nicht markierten Ecken vergleichen, Minimum bestimmen
-
-	
-
 }
 
-/*	Findet zu einem Knoten die Kante mit der minimalen Länge.
-	Rückgabewert: Kante mit der minimalen Länge.
-*/
-//Base* Graph::minWeightEdge(Base *vertex) {
-//	Base* tmpEdge;
-//	Base* minWeight = PSEUDO;
-//	int tmpWeight;
-//
-//	tmpEdge = vertex;
-//	while (tmpEdge != PSEUDO) {
-//		tmpEdge = tmpEdge->getSecondP;
-//		tmpWeight = ((Edge*)tmpEdge)->getWeight();
-//		if (tmpWeight < ((Edge*)minWeight)->getWeight()) {
-//			minWeight = tmpEdge;
-//		}
-//	}
-//	minWeight->setFlag(true);
-//	return minWeight;
-//}
+//Verschiebt die Kante edge so, dass sie als letzte markierte Kante in der Eckenliste von baseVertex steht
+void Graph::moveEdge(Base *baseVertex, Base *edge) {
+	Base *last = baseVertex;
+	Base *e = last->getSecondP();
+	while (e->isMarked()) {
+		last = e;
+		e = e->getSecondP();
+	}
+	last->setSecondP(edge);
+	edge->setSecondP(e);
+}
+
+void Graph::Cycle() {
+	Base* start = this->treeRoot;
+	cout << ((Vertex*)start)->getLabel() << "   " << "0 km" << endl;
+	Base* last;
+	last = go(start);
+	cout << ((Vertex*)start)->getLabel() << "   " << weightBetween(last, start) << " km" << endl;
+}
+
+Base* Graph::go(Base *vertex) {
+	bool isLeave = true;
+	Base* leave = NULL;
+	Base *next;
+
+	Base *e = vertex->getSecondP();
+	
+	while (e->isMarked()) {
+		if (e->isMarked()) {
+			isLeave = false;
+			next = e->getFirstP();
+			e->setMarked(false);
+			if (leave != NULL) {
+				// Abstand leave<->dieser berechnen und ausgeben
+				cout << ((Vertex*)leave)->getLabel() << "   " << weightBetween(leave, next) << " km" << endl;
+				leave = NULL;
+			}
+			cout << ((Vertex*)next)->getLabel() << "   " << ((Edge*)e)->getWeight() << " km" << endl;		// Ausgabe der nächsten Stadt
+			leave = go(next);
+		}
+		else {
+			break;		// Wenn keine markierten Kanten (mehr), zurückkehren, 
+		}
+		e = e->getSecondP();
+	}
+	if (isLeave) {
+		return vertex;
+	}
+	else {
+		return leave;
+	}
+}
+
+int Graph::weightBetween(Base* v1, Base* v2) {
+	Base* e = v1->getSecondP();
+	while (e != NULL) {
+		if (e->getFirstP() == v2) {
+			return ((Edge*)e)->getWeight();
+		}
+		e = e->getSecondP();
+	}
+	return -1;		// sollte nicht passieren
+}
+
