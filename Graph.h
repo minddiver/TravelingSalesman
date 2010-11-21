@@ -8,15 +8,11 @@ class Graph {
 public:
 	Graph();
 	~Graph();
-	//Vertex* getFirstVertex();
-	//Node* getTreeRoot();
-	// TBD: Vertex per Konstruktor im Graphen erzeugen
-	//Vertex* InsVertex(string label);
-	//Vertex* InsVertex();
+	void setTreeRoot(Vertex* newRoot);
 	void InsVertex(Vertex * vertex);
 	Edge * InsEdge(Vertex * v1, Vertex * v2, int weight);
 	void Prim();
-	void Cycle(Vertex * root);
+	void Cycle();
 
 private:
 	Vertex* firstVertex;

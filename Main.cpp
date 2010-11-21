@@ -113,7 +113,8 @@ int main() {
 					if((unsigned int)opt - 1 < vertexes->size() || opt - 1 >= 0)
 					{
 						cout << "Calling Cycle() function..." << endl;
-						grrr->Cycle( vertexes->at(opt) );
+						grrr->setTreeRoot( vertexes->at(opt-1) );
+						grrr->Cycle();
 						cout << endl << "Cycle() called successfully." << endl;
 					}
 					else

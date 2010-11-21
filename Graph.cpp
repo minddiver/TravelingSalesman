@@ -53,6 +53,10 @@ Graph::~Graph() {
 	// TBD: Alle erzeugten Strukturen löschen
 }
 
+void Graph::setTreeRoot(Vertex* newRoot) {
+	this->treeRoot = newRoot;
+}
+
 void Graph::Prim() {
 	Base* p;
 	Base* minEdgeFromHere;
@@ -123,9 +127,7 @@ void Graph::moveEdge(Base *baseVertex, Base *edge) {
 	edge->setSecondP(e);
 }
 
-void Graph::Cycle(Vertex * root) {
-	this->treeRoot = root;
-
+void Graph::Cycle() {
 	Base* start = this->treeRoot;
 	cout << ((Vertex*)start)->getLabel() << "   " << "0 km" << endl;
 	Base* last;
