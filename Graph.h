@@ -16,7 +16,7 @@ public:
 	void InsVertex(Vertex * vertex);
 	Edge * InsEdge(Vertex * v1, Vertex * v2, int weight);
 	void Prim();
-	void Cycle();
+	void Cycle(Vertex * root);
 
 private:
 	Vertex* firstVertex;

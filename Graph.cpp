@@ -123,7 +123,9 @@ void Graph::moveEdge(Base *baseVertex, Base *edge) {
 	edge->setSecondP(e);
 }
 
-void Graph::Cycle() {
+void Graph::Cycle(Vertex * root) {
+	this->treeRoot = root;
+
 	Base* start = this->treeRoot;
 	cout << ((Vertex*)start)->getLabel() << "   " << "0 km" << endl;
 	Base* last;
