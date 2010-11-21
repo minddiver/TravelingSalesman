@@ -110,7 +110,7 @@ int main() {
 					cin >> opt;
 
 					// make sure thaat the index is inside of vector
-					if(opt - 1 < vertexes->size() || opt - 1 >= 0)
+					if((unsigned int)opt - 1 < vertexes->size() || opt - 1 >= 0)
 					{
 						cout << "Calling Cycle() function..." << endl;
 						//grrr->Cycle( vertexes->at(opt) );
