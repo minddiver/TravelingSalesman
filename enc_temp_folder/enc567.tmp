@@ -106,7 +106,7 @@ int main() {
 						if(i < j)
 						{
 							cout << "(" << entriesCounter << "/" << entriesTotal << ")  Weight for:  Vertex" <<
-								i+1 << " ( " << vertexes->at(i)->getLabel() << " ) and Vertex" <<
+								i+1 << " ( " << vertexes->at(i)->getLabel() << " } and Vertex" <<
 								j+1 << " ( " << vertexes->at(j)->getLabel() << " ): ";
 							cin >> tempWeight;
 							
