@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Base.h"
+#include "Edge.h"
 
 class Vertex : public Base {
 public:
