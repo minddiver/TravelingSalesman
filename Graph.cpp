@@ -123,7 +123,7 @@ void Graph::Prim() {
 
 		moveEdge(minEdgeFromHere, minEdge);		// Ans Ende der markierten Kanten einfügen
 		minEdge->setMarked(true);
-		(minEdge->getTarget())->setMarked(true);
+		minEdge->getTarget()->setMarked(true);
 		
 		// Die umgekehrte Kante auch markieren (Euler-Bedingung)
 		e = (Edge*)((Vertex*)minEdge->getTarget())->getEdge();		// Korrigiert: ->getSecondP(), da bei einer Ecke angefangen werden muss
@@ -254,9 +254,6 @@ Vertex* Graph::go(Vertex* vertex) {
 				leave = go(next);
 				
 			}
-		}
-		else {
-			//break;		// Wenn keine markierten Kanten (mehr), zurückkehren, 
 		}
 		e = e->getNext();
 	}
