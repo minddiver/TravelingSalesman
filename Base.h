@@ -16,6 +16,7 @@ Der zweite Zeiger zeigt immer auf eine Ecke.
 class Base {
 public:
 	Base();
+	~Base();
 	Base* getFirstP();
 	Base* getSecondP();
 	bool isMarked();
