@@ -8,10 +8,10 @@ public:
 	Edge(int weight);
 	int getWeight();
 	void setWeight(int weight);
-	Edge* getNext();
-	void setNext(Edge* next);
-	Base* getTarget();
-	void setTarget(Base* target);
+	//Base* getNext();
+	//void setNext(Base* next);
+	//Base* getTarget();
+	//void setTarget(Base* target);
 
 private:
 	int weight;

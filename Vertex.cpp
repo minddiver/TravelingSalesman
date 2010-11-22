@@ -19,20 +19,20 @@ string Vertex::getLabel() {
 void Vertex::setLabel(string label) {
 	this->label = label;
 }
-
-Vertex* Vertex::getNext() {
-	return (Vertex*)this->getFirstP();
-}
-
-void Vertex::setNext(Vertex* next) {
-	this->setFirstP(next);
-}
-
-Base* Vertex::getEdge() {
-	return this->getSecondP();
-}
-
-void Vertex::setEdge(Base *edge) {
-	this->setSecondP(edge);
-}
+//
+//Base* Vertex::getNext() {
+//	return (Vertex*)this->getFirstP();
+//}
+//
+//void Vertex::setNext(Base* next) {
+//	this->setFirstP(next);
+//}
+//
+//Base* Vertex::getEdge() {
+//	return this->getSecondP();
+//}
+//
+//void Vertex::setEdge(Base *edge) {
+//	this->setSecondP(edge);
+//}
 

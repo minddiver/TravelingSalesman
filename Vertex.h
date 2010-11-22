@@ -9,10 +9,10 @@ public:
 	Vertex(string label);
 	string getLabel();
 	void setLabel(string label);
-	Vertex* getNext();
-	void setNext(Vertex* next);
-	Base* getEdge();
-	void setEdge(Base* edge);
+	//Base* getNext();
+	//void setNext(Base* next);
+	//Base* getEdge();
+	//void setEdge(Base* edge);
 
 private:
 	string label;
