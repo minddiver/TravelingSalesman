@@ -21,19 +21,19 @@ void Vertex::setLabel(string label) {
 	this->label = label;
 }
 
-Base* Vertex::getNext() {
+Vertex* Vertex::getNext() {
 	return (Vertex*)this->getFirstP();
 }
 
-void Vertex::setNext(Base* next) {
+void Vertex::setNext(Vertex* next) {
 	this->setFirstP(next);
 }
 
 Base* Vertex::getEdge() {
-	return this->getFirstP();
+	return this->getSecondP();
 }
 
 void Vertex::setEdge(Base *edge) {
-	this->setFirstP(edge);
+	this->setSecondP(edge);
 }
 

@@ -1,7 +1,5 @@
 #pragma once
-//#include "Base.h"
-#include "Vertex.h"
-
+#include "Base.h"
 #define PSEUDO NULL;
 using namespace std;
 
@@ -13,8 +11,8 @@ public:
 	void setWeight(int weight);
 	Edge* getNext();
 	void setNext(Edge* next);
-	Vertex* getTarget();
-	void setTarget(Vertex* target);
+	Base* getTarget();
+	void setTarget(Base* target);
 
 private:
 	int weight;

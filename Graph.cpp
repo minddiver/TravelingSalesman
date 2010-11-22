@@ -1,9 +1,9 @@
 #pragma once
 #include "Graph.h"
-#define PSEUDO NULL;
+//#define PSEUDO NULL;
 
 Graph::Graph() {
-	this->firstVertex = PSEUDO;
+	this->firstVertex = NULL;
 	//this->treeRoot = PSEUDO;
 }
 
@@ -39,30 +39,33 @@ Edge * Graph::InsEdge(Vertex * v1, Vertex * v2, int weight) {
 	//return (Edge*)newEdge;
 
 	Edge *NewEdge1 = new Edge(weight);
-	NewEdge1->setFirstP(v2);
+	NewEdge1->setTarget(v2);
 	
-	NewEdge1->setSecondP(v1->getSecondP());
-	v1->setSecondP(NewEdge1);
+	NewEdge1->setNext((Edge*)v1->getEdge());
+	v1->setEdge(NewEdge1);
 
 
 	Edge *NewEdge2 = new Edge(weight);
-	NewEdge2->setFirstP(v1);
+	NewEdge2->setTarget(v1);
 	
-	NewEdge2->setSecondP(v2->getSecondP());
-	v2->setSecondP(NewEdge2);
+	NewEdge2->setNext((Edge*)v2->getEdge());
+	v2->setEdge(NewEdge2);
 
 	return NewEdge1;
 
 }
 
 void Graph::InsVertex(Vertex * vertex) {
-	if (this->firstVertex == NULL)
+	Vertex* second = this->firstVertex;
+	this->firstVertex = vertex;
+	vertex->setNext(second);
+	/*if (this->firstVertex == NULL)
 		this->firstVertex = vertex;
 	else {
 		Vertex * tmp = this->firstVertex;
 		this->firstVertex = vertex;
-		vertex->setFirstP(tmp);
-	}
+		vertex->setNext(tmp);
+	}*/
 }
 
 
@@ -75,14 +78,13 @@ void Graph::setTreeRoot(Vertex* newRoot) {
 }
 
 void Graph::Prim() {
-	Vertex* p;
-	Vertex* minEdgeFromHere;
+	Vertex* p = NULL;
+	Vertex* minEdgeFromHere = NULL;
 	Edge* minEdge = NULL;
-	Edge* e;
+	Edge* e = NULL;
 	bool unmarkedFound = true;
 	
-	p = this->firstVertex;
-	p->setMarked(true);
+	this->firstVertex->setMarked(true);
 	
 	while (unmarkedFound) {
 		unmarkedFound = false;
@@ -90,30 +92,30 @@ void Graph::Prim() {
 		minEdge = NULL;		// Korrigiert: reset!
 		while (p != NULL) {
 			if (p->isMarked()) {	
-				e = (Edge*)p->getSecondP();
+				e = (Edge*)p->getEdge();
 				// kleinste Kante suchen
 				while (e != NULL) {
 					// Erstmal eine beliebige als kleinste annehmen
 					if (minEdge == NULL) {
-						if (!e->getFirstP()->isMarked()) {
+						if (!e->getTarget()->isMarked()) {
 							minEdge = e;
 							minEdgeFromHere = p;
 						}
 					}
 					// Vergleichen und wenn kleiner, neue kleinste Ecke setzen
 					else {
-						if ((!e->getFirstP()->isMarked()) && (e->getWeight() < (minEdge->getWeight()))) {
+						if ((!e->getTarget()->isMarked()) && (e->getWeight() < (minEdge->getWeight()))) {
 							minEdge = e;
 							minEdgeFromHere = p;
 						}
 					}
-					e = (Edge*)e->getSecondP();
+					e = e->getNext();
 				}
 			}
 			else {
 				unmarkedFound = true;
 			}
-			p = (Vertex*)p->getFirstP();
+			p = p->getNext();
 		}
 		
 		if(minEdge == NULL)	// extra ueberprfuefung, ob wir den letzten Edge erreicht hatten
@@ -121,14 +123,14 @@ void Graph::Prim() {
 
 		minEdge->setMarked(true);
 		moveEdge(minEdgeFromHere, minEdge);		// Ans Ende der markierten Kanten einfügen
-		(minEdge->getFirstP())->setMarked(true);
+		(minEdge->getTarget())->setMarked(true);
 		
 		// Die umgekehrte Kante auch markieren (Euler-Bedingung)
-		e = (Edge*)minEdge->getFirstP()->getSecondP();		// Korrigiert: ->getSecondP(), da bei einer Ecke angefangen werden muss
+		e = (Edge*)((Vertex*)minEdge->getTarget())->getEdge();		// Korrigiert: ->getSecondP(), da bei einer Ecke angefangen werden muss
 		while (e != NULL) {
-			if (e->getFirstP() == minEdgeFromHere) {	
+			if (e->getTarget() == minEdgeFromHere) {	
 				e->setMarked(true);
-				moveEdge(minEdge->getFirstP(), e);		// Und richtig einreihen
+				moveEdge((Vertex*)minEdge->getTarget(), e);		// Und richtig einreihen
 				break;
 			}
 			e = e->getNext();
@@ -137,25 +139,36 @@ void Graph::Prim() {
 }
 
 //Verschiebt die Kante edge so, dass sie als letzte markierte Kante in der Eckenliste von baseVertex steht
-void Graph::moveEdge(Base *baseVertex, Base *edge) {
-	Base *last = baseVertex;
-	Base *e = last->getSecondP();
+void Graph::moveEdge(Vertex *baseVertex, Edge *edge) {
+	Edge* last = (Edge*)baseVertex->getEdge();
+	//Edge
+	Edge *e = (Edge*)baseVertex->getEdge();
 	
 	/*vielleicht Edge zum Einfuegen, steht schon als erster 
 	Element in der Edge-Liste, dann muessen wir nicht tun*/
-	if(last->getSecondP() == edge)	// 
+	if(last == edge)	// 
 	{
 		return;
 	}
-
-	while (e != NULL && e->isMarked() && ((Edge*)e)->getWeight() < ((Edge*)edge)->getWeight() ) {
-		last = e;
-		e = e->getSecondP();
+	else 
+	{
+		last = NULL;
 	}
+
+	while (e != NULL && e->isMarked() /*&& e->getWeight() < ((Edge*)edge)->getWeight()*/ ) {
+		last = e;
+		e = (Edge*)e->getNext();
+	}
+	if (last == NULL)
+	{
+		cout << "Fehler! Hier sollte eine Kante sein!" << endl;
+		return;
+	}
+	
 	last->setSecondP(edge);
 
-	if (e != NULL)	// falls e ist nicht NULL
-		e->setSecondP(edge->getSecondP());	// wir muessen den alten Zeiger von edge speichern
+	//if (e != NULL)	// falls e ist nicht NULL
+	//	e->setSecondP(edge->getSecondP());	// wir muessen den alten Zeiger von edge speichern
 	
 	edge->setSecondP(e);
 }

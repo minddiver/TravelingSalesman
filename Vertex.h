@@ -11,8 +11,8 @@ public:
 	Vertex(string label);
 	string getLabel();
 	void setLabel(string label);
-	Base* getNext();
-	void setNext(Base* next);
+	Vertex* getNext();
+	void setNext(Vertex* next);
 	Base* getEdge();
 	void setEdge(Base* edge);
 

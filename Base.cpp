@@ -2,8 +2,8 @@
 #include "Base.h"
 
 Base::Base() {
-	this->firstP = PSEUDO;
-	this->secondP = PSEUDO;
+	this->firstP = NULL;
+	this->secondP = NULL;
 	this->mark = false;
 }
 

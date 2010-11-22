@@ -2,20 +2,21 @@
 #include "Graph.h"
 #include <stdio.h>
 #include <vector>
+using namespace std;
 
 int main() {
 	Graph * grrr = new Graph();
 
 	
-	Vertex * v1 = new Vertex("Paris");
-	Vertex * v2 = new Vertex("Munich");
-	Vertex * v3 = new Vertex("Moscow");
+	Vertex* v1 = new Vertex("Paris");
+	Vertex* v2 = new Vertex("Munich");
+	Vertex* v3 = new Vertex("Moscow");
 	grrr->InsVertex(v1);
 	grrr->InsVertex(v2);
 	grrr->InsVertex(v3);
-	Edge * e1 = grrr->InsEdge(v1, v2, 1000);
-	Edge * e2 = grrr->InsEdge(v1, v3, 2500);
-	Edge * e3 = grrr->InsEdge(v2, v3, 2000);
+	Edge* e1 = grrr->InsEdge(v1, v2, 1000);
+	Edge* e2 = grrr->InsEdge(v1, v3, 2500);
+	Edge* e3 = grrr->InsEdge(v2, v3, 2000);
 	grrr->Prim();
 	grrr->setTreeRoot(v3);
 	grrr->Cycle();

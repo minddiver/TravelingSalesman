@@ -2,6 +2,7 @@
 #define PSEUDO NULL;
 #include "Edge.h"
 #include "Vertex.h"
+using namespace std;
 
 class Graph {
 public:
@@ -15,7 +16,7 @@ public:
 
 private:
 	Vertex* firstVertex;
-	void moveEdge(Base* baseVertex, Base* edge);
+	void moveEdge(Vertex* baseVertex, Edge* edge);
 	Base* go(Base *vertex);
 	Base* treeRoot;
 	int weightBetween(Base* v1, Base* v2);

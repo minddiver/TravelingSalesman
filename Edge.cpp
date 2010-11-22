@@ -1,7 +1,5 @@
 #pragma once
-#include "Base.h"
 #include "Edge.h"
-#include "Vertex.h"
 
 Edge::Edge() {
 	this->weight = 0;
@@ -27,10 +25,10 @@ void Edge::setNext(Edge* next) {
 	this->setSecondP(next);
 }
 
-Vertex* Edge::getTarget() {
-	return (Vertex*)this->getFirstP();
+Base* Edge::getTarget() {
+	return this->getFirstP();
 }
 
-void Edge::setTarget(Vertex* target) {
+void Edge::setTarget(Base* target) {
 	this->setFirstP(target);
 }
