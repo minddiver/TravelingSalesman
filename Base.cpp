@@ -1,17 +1,16 @@
-#pragma once
 #include "Base.h"
 
 Base::Base() {
-	this->firstP = NULL;
-	this->secondP = NULL;
+	this->firstP = PSEUDO;
+	this->secondP = PSEUDO;
 	this->mark = false;
 }
 
 Base::~Base() {
-	if(this->firstP != NULL)
+	if(this->firstP != PSEUDO)
 		delete this->firstP;
 
-	if(this->secondP != NULL)
+	if(this->secondP != PSEUDO)
 		delete this->secondP;
 }
 

@@ -1,8 +1,8 @@
 #pragma once
-#define PSEUDO NULL;
+
 #include "Edge.h"
 #include "Vertex.h"
-using namespace std;
+
 
 class Graph {
 public:

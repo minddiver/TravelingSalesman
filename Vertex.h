@@ -1,8 +1,6 @@
 #pragma once
-#define PSEUDO NULL;
-#include "Base.h"
-using namespace std;
 
+#include "Base.h"
 
 class Vertex : public Base {
 public:

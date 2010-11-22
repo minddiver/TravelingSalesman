@@ -1,7 +1,6 @@
 #pragma once
+
 #include "Base.h"
-#define PSEUDO NULL;
-using namespace std;
 
 class Edge : public Base {
 public:

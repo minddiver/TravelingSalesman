@@ -1,9 +1,7 @@
-#pragma once
 #include "Graph.h"
-//#define PSEUDO NULL;
 
 Graph::Graph() {
-	this->firstVertex = NULL;
+	this->firstVertex = PSEUDO;
 	//this->treeRoot = PSEUDO;
 }
 
@@ -20,21 +18,21 @@ Edge * Graph::InsEdge(Vertex * v1, Vertex * v2, int weight) {
 	
 	//Base* lastEdge = v1->getSecondP();
 	//Base* newEdge = new Edge(weight);
-	//if (lastEdge != NULL) {
+	//if (lastEdge != PSEUDO) {
 	//	newEdge->setSecondP(lastEdge);
 	//}
 	//newEdge->setFirstP(v2);
 	//v1->setSecondP(newEdge);
-	//lastEdge = NULL;
+	//lastEdge = PSEUDO;
 
 	//Base* lastEdge2 = v2->getSecondP();
 	//Base * newEdge2 = new Edge(weight);
-	//if (lastEdge2 != NULL) {
+	//if (lastEdge2 != PSEUDO) {
 	//	newEdge2->setSecondP(lastEdge2);
 	//}
 	//newEdge2->setFirstP(v1);
 	//v2->setSecondP(newEdge2);
-	//lastEdge2 = NULL;
+	//lastEdge2 = PSEUDO;
 
 	//return (Edge*)newEdge;
 
@@ -59,7 +57,7 @@ void Graph::InsVertex(Vertex * vertex) {
 	Vertex* second = this->firstVertex;
 	this->firstVertex = vertex;
 	vertex->setNext(second);
-	/*if (this->firstVertex == NULL)
+	/*if (this->firstVertex == PSEUDO)
 		this->firstVertex = vertex;
 	else {
 		Vertex * tmp = this->firstVertex;
@@ -78,10 +76,10 @@ void Graph::setTreeRoot(Vertex* newRoot) {
 }
 
 void Graph::Prim() {
-	Vertex* p = NULL;
-	Vertex* minEdgeFromHere = NULL;
-	Edge* minEdge = NULL;
-	Edge* e = NULL;
+	Vertex* p = PSEUDO;
+	Vertex* minEdgeFromHere = PSEUDO;
+	Edge* minEdge = PSEUDO;
+	Edge* e = PSEUDO;
 	bool unmarkedFound = true;
 	
 	this->firstVertex->setMarked(true);
@@ -89,14 +87,14 @@ void Graph::Prim() {
 	while (unmarkedFound) {
 		unmarkedFound = false;
 		p = this->firstVertex;
-		minEdge = NULL;		// Korrigiert: reset!
-		while (p != NULL) {
+		minEdge = PSEUDO;		// Korrigiert: reset!
+		while (p != PSEUDO) {
 			if (p->isMarked()) {	
 				e = (Edge*)p->getEdge();
 				// kleinste Kante suchen
-				while (e != NULL) {
+				while (e != PSEUDO) {
 					// Erstmal eine beliebige als kleinste annehmen
-					if (minEdge == NULL) {
+					if (minEdge == PSEUDO) {
 						if (!e->getTarget()->isMarked()) {
 							minEdge = e;
 							minEdgeFromHere = p;
@@ -118,7 +116,7 @@ void Graph::Prim() {
 			p = p->getNext();
 		}
 		
-		if(minEdge == NULL)	// extra ueberprfuefung, ob wir den letzten Edge erreicht hatten
+		if(minEdge == PSEUDO)	// extra ueberprfuefung, ob wir den letzten Edge erreicht hatten
 			continue;
 
 		moveEdge(minEdgeFromHere, minEdge);		// Ans Ende der markierten Kanten einfügen
@@ -127,7 +125,7 @@ void Graph::Prim() {
 		
 		// Die umgekehrte Kante auch markieren (Euler-Bedingung)
 		e = (Edge*)((Vertex*)minEdge->getTarget())->getEdge();		// Korrigiert: ->getSecondP(), da bei einer Ecke angefangen werden muss
-		while (e != NULL) {
+		while (e != PSEUDO) {
 			if (e->getTarget() == minEdgeFromHere) {	
 				moveEdge((Vertex*)minEdge->getTarget(), e);		// Und richtig einreihen
 				e->setMarked(true);
@@ -141,7 +139,7 @@ void Graph::Prim() {
 //Verschiebt die Kante edge so, dass sie als letzte markierte Kante in der Eckenliste von baseVertex steht
 void Graph::moveEdge(Vertex *baseVertex, Edge *edge) {
 	//Edge* lastMarked = (Edge*)baseVertex->getEdge();
-	Edge* lastMarked = NULL;
+	Edge* lastMarked = PSEUDO;
 	Edge *e = (Edge*)baseVertex->getEdge();
 	Edge* beforeEdge;
 	
@@ -152,22 +150,22 @@ void Graph::moveEdge(Vertex *baseVertex, Edge *edge) {
 		return;
 	}
 
-	while (e != NULL && e->isMarked() && e->getWeight() < ((Edge*)edge)->getWeight() ) {
+	while (e != PSEUDO && e->isMarked() && e->getWeight() < ((Edge*)edge)->getWeight() ) {
 		lastMarked = e;
 		e = (Edge*)e->getNext();
 	}
 
-	if (lastMarked == NULL)		// keine markierten Kanten
+	if (lastMarked == PSEUDO)		// keine markierten Kanten
 	{
 		// Vorherige suchen
-		while (e != NULL)
+		while (e != PSEUDO)
 		{	
 			if (e == edge)
 				break;
 			beforeEdge = e;
 			e = e->getNext();
 		}
-		beforeEdge->setNext(edge->getNext());	// auch wenn NULL
+		beforeEdge->setNext(edge->getNext());	// auch wenn PSEUDO
 		edge->setNext((Edge*)baseVertex->getEdge());
 		baseVertex->setEdge(edge);
 		return;
@@ -181,14 +179,14 @@ void Graph::moveEdge(Vertex *baseVertex, Edge *edge) {
 		//	// Am Anfang einfügen
 		//	return;
 		//}
-		while (e != NULL)
+		while (e != PSEUDO)
 		{	
 			if (e == edge)
 				break;
 			beforeEdge = e;
 			e = e->getNext();
 		}
-		beforeEdge->setNext(edge->getNext());	// auch wenn NULL
+		beforeEdge->setNext(edge->getNext());	// auch wenn PSEUDO
 		edge->setNext(lastMarked->getNext());
 		lastMarked->setNext(edge);
 		return;
@@ -196,7 +194,7 @@ void Graph::moveEdge(Vertex *baseVertex, Edge *edge) {
 	
 	
 
-	//if (e != NULL)	// falls e ist nicht NULL
+	//if (e != PSEUDO)	// falls e ist nicht PSEUDO
 	//	e->setSecondP(edge->getSecondP());	// wir muessen den alten Zeiger von edge speichern
 	
 	if (edge != e)
@@ -216,7 +214,7 @@ void Graph::Cycle() {
 
 Vertex* Graph::go(Vertex* vertex) {
 	bool isLeave = true;
-	Vertex* leave = NULL;
+	Vertex* leave = PSEUDO;
 	Vertex *next;
 	Vertex* r;
 	Edge* re;
@@ -225,7 +223,7 @@ Vertex* Graph::go(Vertex* vertex) {
 
 	Edge *e = (Edge*)vertex->getEdge();
 	
-	while (e != NULL /*&& e->isMarked()*/) {
+	while (e != PSEUDO /*&& e->isMarked()*/) {
 		if (e->isMarked()) {
 			isLeave = false;
 			next = (Vertex*)e->getTarget();
@@ -234,7 +232,7 @@ Vertex* Graph::go(Vertex* vertex) {
 			// Rückkante löschen
 			r = (Vertex*)e->getTarget();
 			re = (Edge*)r->getEdge();
-			while (re != NULL) 
+			while (re != PSEUDO) 
 			{
 				if ((Vertex*)re->getTarget() == vertex)
 				{
@@ -243,10 +241,10 @@ Vertex* Graph::go(Vertex* vertex) {
 				re = re->getNext();
 			}
 			if (next->isMarked()) {
-				if (leave != NULL) {
+				if (leave != PSEUDO) {
 					// Abstand leave<->dieser berechnen und ausgeben
 					cout << ((Vertex*)next)->getLabel() << "\t\t" << weightBetween(leave, next) << " km" << endl;
-					leave = NULL;
+					leave = PSEUDO;
 				}
 				else {
 					cout << ((Vertex*)next)->getLabel() << "\t\t" << e->getWeight() << " km" << endl;		// Ausgabe der nächsten Stadt
@@ -267,7 +265,7 @@ Vertex* Graph::go(Vertex* vertex) {
 
 int Graph::weightBetween(Base* v1, Base* v2) {
 	Base* e = v1->getSecondP();
-	while (e != NULL) {
+	while (e != PSEUDO) {
 		if (e->getFirstP() == v2) {
 			return ((Edge*)e)->getWeight();
 		}

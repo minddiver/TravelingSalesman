@@ -1,12 +1,10 @@
 #pragma once
 
-#define PSEUDO NULL;
-
-#include <stdio.h>
-#include <tchar.h>
 #include <iostream>
 #include <string>
-#include <iomanip>
+
+#define PSEUDO NULL
+
 using namespace std;
 
 /*

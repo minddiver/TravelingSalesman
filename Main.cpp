@@ -36,14 +36,14 @@ int main() {
 	//grrr->InsEdge(v4, v6, 61);
 	//grrr->InsEdge(v5, v6, 126);
 	//grrr->Prim();
-	//grrr->setTreeRoot(v3);
+	//grrr->setTreeRoot(v5);
 	//grrr->Cycle();
+
 	
-	
-	//// wait before close trick
+	// wait before close trick
 	//int aa;
 	//cin >> aa;
-
+	//return 0;
 	
 
 	vector<Vertex*> * vertexes = new vector<Vertex*>();
