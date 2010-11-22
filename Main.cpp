@@ -11,14 +11,19 @@ int main() {
 	Vertex* v1 = new Vertex("Paris");
 	Vertex* v2 = new Vertex("Munich");
 	Vertex* v3 = new Vertex("Moscow");
+	Vertex* v4 = new Vertex("Berlin");
 	grrr->InsVertex(v1);
 	grrr->InsVertex(v2);
 	grrr->InsVertex(v3);
+	grrr->InsVertex(v4);
 	Edge* e1 = grrr->InsEdge(v1, v2, 1000);
 	Edge* e2 = grrr->InsEdge(v1, v3, 2500);
+	grrr->InsEdge(v1, v4, 1400);
 	Edge* e3 = grrr->InsEdge(v2, v3, 2000);
+	grrr->InsEdge(v2, v4, 600);
+	grrr->InsEdge(v3, v4, 1600);
 	grrr->Prim();
-	grrr->setTreeRoot(v3);
+	grrr->setTreeRoot(v2);
 	grrr->Cycle();
 	
 	

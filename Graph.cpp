@@ -221,12 +221,15 @@ Vertex* Graph::go(Vertex* vertex) {
 	Vertex* r;
 	Edge* re;
 
+	vertex->setMarked(false);
+
 	Edge *e = (Edge*)vertex->getEdge();
 	
 	while (e != NULL /*&& e->isMarked()*/) {
 		if (e->isMarked()) {
 			isLeave = false;
 			next = (Vertex*)e->getTarget();
+			
 			e->setMarked(false);		// Fehler: die Rückkante muss auch gelöscht werde, weil sie niemals gegangen wird, ausser es gibt nur 2 Knoten
 			// Rückkante löschen
 			r = (Vertex*)e->getTarget();
@@ -239,14 +242,18 @@ Vertex* Graph::go(Vertex* vertex) {
 				}
 				re = re->getNext();
 			}
-
-			if (leave != NULL) {
-				// Abstand leave<->dieser berechnen und ausgeben
-				cout << ((Vertex*)leave)->getLabel() << "\t\t" << weightBetween(leave, next) << " km" << endl;
-				leave = NULL;
+			if (next->isMarked()) {
+				if (leave != NULL) {
+					// Abstand leave<->dieser berechnen und ausgeben
+					cout << ((Vertex*)next)->getLabel() << "\t\t" << weightBetween(leave, next) << " km" << endl;
+					leave = NULL;
+				}
+				else {
+					cout << ((Vertex*)next)->getLabel() << "\t\t" << e->getWeight() << " km" << endl;		// Ausgabe der nächsten Stadt
+				}
+				leave = go(next);
+				
 			}
-			cout << ((Vertex*)next)->getLabel() << "\t\t" << ((Edge*)e)->getWeight() << " km" << endl;		// Ausgabe der nächsten Stadt
-			leave = go(next);
 		}
 		else {
 			//break;		// Wenn keine markierten Kanten (mehr), zurückkehren, 
