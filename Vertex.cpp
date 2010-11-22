@@ -11,8 +11,7 @@ Vertex::Vertex(string label) {
 }
 
 Vertex::~Vertex() {
-	//if (this->label != NULL)
-	//	delete this->label;
+	delete &this->label;
 }
 
 string Vertex::getLabel() {

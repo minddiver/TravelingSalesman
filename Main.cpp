@@ -7,23 +7,25 @@ int main() {
 	Graph * grrr = new Graph();
 
 	
-	Vertex * v1 = new Vertex("a");
-	Vertex * v2 = new Vertex("b");
-	Vertex * v3 = new Vertex("c");
+	Vertex * v1 = new Vertex("Paris");
+	Vertex * v2 = new Vertex("Munich");
+	Vertex * v3 = new Vertex("Moscow");
 	grrr->InsVertex(v1);
 	grrr->InsVertex(v2);
 	grrr->InsVertex(v3);
-	Edge * e1 = grrr->InsEdge(v1, v2, 1);
-	Edge * e2 = grrr->InsEdge(v1, v3, 2);
-	Edge * e3 = grrr->InsEdge(v2, v3, 3);
+	Edge * e1 = grrr->InsEdge(v1, v2, 1000);
+	Edge * e2 = grrr->InsEdge(v1, v3, 2500);
+	Edge * e3 = grrr->InsEdge(v2, v3, 2000);
 	grrr->Prim();
 	grrr->setTreeRoot(v3);
 	grrr->Cycle();
 	
 	
-	// cycle is not working correctly yet. Should be: a=0km; b=1km; c=2km
-	
-	// wait-before-close trick
+	// Reference output: root=v1 Paris 0km->Munich 1000km->Moscow 2000km;->Munich 2000km->Paris 1000km
+	// Reference output: root=v2 Munich 0km->Paris 1000km->Munich 1000km->Moscow 2000km->Munich 2000km
+	// Reference output: root=v3 Moscow 0km->Munich 2000km->Paris 1000km->Munich 1000km->Moscow 2000km
+
+	// wait before close trick
 	int aa;
 	cin >> aa;
 

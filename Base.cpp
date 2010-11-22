@@ -8,11 +8,11 @@ Base::Base() {
 }
 
 Base::~Base() {
-	//if(this->firstP != NULL)
-	//	delete this->firstP;
+	if(this->firstP != NULL)
+		delete this->firstP;
 
-	//if(this->secondP != NULL)
-	//	delete this->secondP;
+	if(this->secondP != NULL)
+		delete this->secondP;
 }
 
 Base* Base::getFirstP() {

@@ -5,7 +5,6 @@
 using namespace std;
 
 
-
 class Vertex : public Base {
 public:
 	Vertex();
@@ -16,7 +15,4 @@ public:
 
 private:
 	string label;
-
-
-
 };

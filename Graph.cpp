@@ -67,7 +67,7 @@ void Graph::InsVertex(Vertex * vertex) {
 
 
 Graph::~Graph() {
-	// TBD: Alle erzeugten Strukturen löschen
+	delete this->firstVertex;
 }
 
 void Graph::setTreeRoot(Vertex* newRoot) {
@@ -160,10 +160,10 @@ void Graph::moveEdge(Base *baseVertex, Base *edge) {
 
 void Graph::Cycle() {
 	Base* start = this->treeRoot;
-	cout << ((Vertex*)start)->getLabel() << "   " << "0 km" << endl;
+	cout << ((Vertex*)start)->getLabel() << "\t\t" << "0 km" << endl;
 	Base* last;
 	last = go(start);
-	cout << ((Vertex*)start)->getLabel() << "   " << weightBetween(last, start) << " km" << endl;
+	cout << ((Vertex*)start)->getLabel() << "\t\t" << weightBetween(last, start) << " km" << endl;
 }
 
 Base* Graph::go(Base *vertex) {
@@ -180,10 +180,10 @@ Base* Graph::go(Base *vertex) {
 			e->setMarked(false);
 			if (leave != NULL) {
 				// Abstand leave<->dieser berechnen und ausgeben
-				cout << ((Vertex*)leave)->getLabel() << "   " << weightBetween(leave, next) << " km" << endl;
+				cout << ((Vertex*)leave)->getLabel() << "\t\t" << weightBetween(leave, next) << " km" << endl;
 				leave = NULL;
 			}
-			cout << ((Vertex*)next)->getLabel() << "   " << ((Edge*)e)->getWeight() << " km" << endl;		// Ausgabe der nächsten Stadt
+			cout << ((Vertex*)next)->getLabel() << "\t\t" << ((Edge*)e)->getWeight() << " km" << endl;		// Ausgabe der nächsten Stadt
 			leave = go(next);
 		}
 		else {
