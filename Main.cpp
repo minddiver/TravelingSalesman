@@ -6,18 +6,30 @@
 int main() {
 	Graph * grrr = new Graph();
 
-	Vertex * v1 = new Vertex("aa");
-	Vertex * v2 = new Vertex("bb");
-	Vertex * v3 = new Vertex("cc");
+	
+	Vertex * v1 = new Vertex("a");
+	Vertex * v2 = new Vertex("b");
+	Vertex * v3 = new Vertex("c");
 	grrr->InsVertex(v1);
 	grrr->InsVertex(v2);
 	grrr->InsVertex(v3);
-	Edge * e1 = grrr->InsEdge(v1,v2,1);
-	Edge * e2 = grrr->InsEdge(v1,v3,2);
-	Edge * e3 = grrr->InsEdge(v2,v3,3);
+	Edge * e1 = grrr->InsEdge(v1, v2, 1);
+	Edge * e2 = grrr->InsEdge(v1, v3, 2);
+	Edge * e3 = grrr->InsEdge(v2, v3, 3);
 	grrr->Prim();
+	grrr->setTreeRoot(v3);
+	grrr->Cycle();
+	
+	
+	// cycle is not working correctly yet. Should be: a=0km; b=1km; c=2km
+	
+	// wait-before-close trick
+	int aa;
+	cin >> aa;
 
-	/*vector<Vertex*> * vertexes = new vector<Vertex*>();
+	
+/*
+	vector<Vertex*> * vertexes = new vector<Vertex*>();
 	int opt = 0;
 	int tempWeight = 0;
 	bool primCalled = false;
@@ -28,12 +40,8 @@ int main() {
 	Vertex * tempV;
 	string vertexName;
 	string tempName;
-*/
-	
 
 
-
-	/*
 	cout << "Welcome to the Traveling Salesman Problem Solver!" << endl;
 	while (true){
 		cout << endl << "Here is a list of things you can do: " << endl;
@@ -139,8 +147,8 @@ int main() {
 				break;
 		}
 	}
-
 */
 
+	
 	return 0;
 }

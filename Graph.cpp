@@ -146,7 +146,7 @@ void Graph::moveEdge(Base *baseVertex, Base *edge) {
 		return;
 	}
 
-	while (e != NULL && e->isMarked()) {
+	while (e != NULL && e->isMarked() && ((Edge*)e)->getWeight() < ((Edge*)edge)->getWeight() ) {
 		last = e;
 		e = e->getSecondP();
 	}
@@ -173,7 +173,7 @@ Base* Graph::go(Base *vertex) {
 
 	Base *e = vertex->getSecondP();
 	
-	while (e->isMarked()) {
+	while (e != NULL && e->isMarked()) {
 		if (e->isMarked()) {
 			isLeave = false;
 			next = e->getFirstP();
