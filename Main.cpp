@@ -12,18 +12,24 @@ int main() {
 	Vertex* v2 = new Vertex("Munich");
 	Vertex* v3 = new Vertex("Moscow");
 	Vertex* v4 = new Vertex("Berlin");
+	Vertex* v5 = new Vertex("London");
 	grrr->InsVertex(v1);
 	grrr->InsVertex(v2);
 	grrr->InsVertex(v3);
 	grrr->InsVertex(v4);
+	grrr->InsVertex(v5);
 	Edge* e1 = grrr->InsEdge(v1, v2, 1000);
 	Edge* e2 = grrr->InsEdge(v1, v3, 2500);
 	grrr->InsEdge(v1, v4, 1400);
+	grrr->InsEdge(v1, v5, 1400);
 	Edge* e3 = grrr->InsEdge(v2, v3, 2000);
 	grrr->InsEdge(v2, v4, 600);
-	grrr->InsEdge(v3, v4, 1600);
+	grrr->InsEdge(v2, v5, 1600);
+	grrr->InsEdge(v3, v4, 1600);	
+	grrr->InsEdge(v3, v5, 3100);
+	grrr->InsEdge(v4, v5, 1400);
 	grrr->Prim();
-	grrr->setTreeRoot(v2);
+	grrr->setTreeRoot(v3);
 	grrr->Cycle();
 	
 	
