@@ -16,26 +16,24 @@ Graph::Graph() {
 	in beide Richtungen gleich sind!) Dann kann man ein 2D-statisches Array verwenden, in dem
 	alle Eckenpaare vorkommen (Anzahl der Kombinationen bei n Ecken: 
 */
-Edge * Graph::InsEdge(Vertex * v1, Vertex * v2, int weight) {
-	
-	
-	Base* lastEdge = v1->getSecondP();
-	Base* newEdge = new Edge(weight);
+Edge* Graph::InsEdge(Vertex * v1, Vertex * v2, int weight) {
+	Edge* lastEdge = v1->getSecondP();
+	Edge* newEdge = new Edge(weight);
 	if (lastEdge != NULL) {
-		newEdge->setSecondP(lastEdge);
+		newEdge->setNext(lastEdge);
 	}
-	newEdge->setFirstP(v2);
+	newEdge->setTarget(v2);
 	v1->setSecondP(newEdge);
 
 	lastEdge = v2->getSecondP();
-	Base * newEdge2 = new Edge(weight);
+	Edge* newEdge2 = new Edge(weight);
 	if (lastEdge != NULL) {
-		newEdge2->setSecondP(lastEdge);
+		newEdge2->setNext(lastEdge);
 	}
-	newEdge2->setFirstP(v1);
+	newEdge2->setTarget(v1);
 	v2->setSecondP(newEdge2);
 
-	return (Edge*)newEdge;
+	return newEdge;
 }
 
 void Graph::InsVertex(Vertex * vertex) {
@@ -114,10 +112,12 @@ Graph::~Graph() {
 
 
 void Graph::Prim() {
-	Base * p;
-	Base * minEdgeFromHere;
-	Base * minEdge = NULL;
-	Base * e;
+	/*Die Typen von Vars wieder angepasst. So lässt sich das noch schöner Casten und vor allem muss nicht
+	mehr bei jeder Überprüfung auf minimale Länge gecastet werden.*/
+	Vertex * p;
+	Vertex * minEdgeFromHere;
+	Edge * minEdge = NULL;
+	Edge * e;
 	bool unmarkedFound = true;
 	
 	p = this->firstVertex;
@@ -126,9 +126,14 @@ void Graph::Prim() {
 	while (unmarkedFound) {
 		unmarkedFound = false;
 		p = this->firstVertex;
+		/*Korrigiert: hier sollte minEdge am Anfang von jedem Durchlauf auf NULL gesetzt werden, sonst
+		ist da noch der Wert vom letzten Durchlauf gespeichert. Wenn beim nächsten Durchlauf eine
+		Kante gefunden werden müsste, die wieder die gleiche Länge hat wie die minimale aus dem letzten
+		Durchlauf, würde der Algorithmus sonst versagen.*/
+		minEdge = NULL;		
 		while (p != NULL) {
 			if (p->isMarked()) {	
-				e = p->getSecondP();
+				e = (Edge*)p->getSecondP();
 				while (e != NULL) {
 					if (minEdge == NULL) {
 						if (!e->getFirstP()->isMarked()) {
@@ -137,23 +142,25 @@ void Graph::Prim() {
 						}
 					}
 					else {
-						if ((!e->getFirstP()->isMarked()) && (((Edge*)e)->getWeight() < ((Edge*)minEdge)->getWeight())) {
+						if ((!e->getFirstP()->isMarked()) && (e->getWeight() < (minEdge->getWeight()))) {
 							minEdge = e;
 							minEdgeFromHere = p;
 						}
 					}
-					e = e->getSecondP();
+					e = (Edge*)e->getSecondP();
 				}
 			}
 			else {
 				unmarkedFound = true;
 			}
-			p = p->getFirstP();
+			p = (Vertex*)p->getFirstP();
 		}
 		minEdge->setMarked(true);
 		minEdge->getFirstP()->setMarked(true);
 		
-		e = minEdge->getFirstP();
+		/*Korrigiert: ->getSecondP() dazugenommen. Der Durchlauf sollte bei einer Kante starten und nicht bei
+		der Ecke selbst, sonst würde im ungünstigen Fall die nächste Ecke markiert. (Eigentlich wieder nicht) */
+		e = minEdge->getFirstP()->getSecondP();
 		while (e != NULL) {
 			if (e->getFirstP() == minEdgeFromHere) {
 				e->setMarked(true);
