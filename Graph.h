@@ -17,8 +17,8 @@ public:
 private:
 	Vertex* firstVertex;
 	void moveEdge(Vertex* baseVertex, Edge* edge);
-	Base* go(Base *vertex);
-	Base* treeRoot;
+	Vertex* go(Vertex *vertex);
+	Vertex* treeRoot;
 	int weightBetween(Base* v1, Base* v2);
 };
 

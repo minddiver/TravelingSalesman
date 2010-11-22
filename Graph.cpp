@@ -121,16 +121,16 @@ void Graph::Prim() {
 		if(minEdge == NULL)	// extra ueberprfuefung, ob wir den letzten Edge erreicht hatten
 			continue;
 
-		minEdge->setMarked(true);
 		moveEdge(minEdgeFromHere, minEdge);		// Ans Ende der markierten Kanten einfügen
+		minEdge->setMarked(true);
 		(minEdge->getTarget())->setMarked(true);
 		
 		// Die umgekehrte Kante auch markieren (Euler-Bedingung)
 		e = (Edge*)((Vertex*)minEdge->getTarget())->getEdge();		// Korrigiert: ->getSecondP(), da bei einer Ecke angefangen werden muss
 		while (e != NULL) {
 			if (e->getTarget() == minEdgeFromHere) {	
-				e->setMarked(true);
 				moveEdge((Vertex*)minEdge->getTarget(), e);		// Und richtig einreihen
+				e->setMarked(true);
 				break;
 			}
 			e = e->getNext();
@@ -140,59 +140,106 @@ void Graph::Prim() {
 
 //Verschiebt die Kante edge so, dass sie als letzte markierte Kante in der Eckenliste von baseVertex steht
 void Graph::moveEdge(Vertex *baseVertex, Edge *edge) {
-	Edge* last = (Edge*)baseVertex->getEdge();
-	//Edge
+	//Edge* lastMarked = (Edge*)baseVertex->getEdge();
+	Edge* lastMarked = NULL;
 	Edge *e = (Edge*)baseVertex->getEdge();
+	Edge* beforeEdge;
 	
 	/*vielleicht Edge zum Einfuegen, steht schon als erster 
 	Element in der Edge-Liste, dann muessen wir nicht tun*/
-	if(last == edge)	// 
+	if(e == edge)	// 
 	{
 		return;
 	}
-	else 
-	{
-		last = NULL;
-	}
 
-	while (e != NULL && e->isMarked() /*&& e->getWeight() < ((Edge*)edge)->getWeight()*/ ) {
-		last = e;
+	while (e != NULL && e->isMarked() && e->getWeight() < ((Edge*)edge)->getWeight() ) {
+		lastMarked = e;
 		e = (Edge*)e->getNext();
 	}
-	if (last == NULL)
+
+	if (lastMarked == NULL)		// keine markierten Kanten
 	{
-		cout << "Fehler! Hier sollte eine Kante sein!" << endl;
+		// Vorherige suchen
+		while (e != NULL)
+		{	
+			if (e == edge)
+				break;
+			beforeEdge = e;
+			e = e->getNext();
+		}
+		beforeEdge->setNext(edge->getNext());	// auch wenn NULL
+		edge->setNext((Edge*)baseVertex->getEdge());
+		baseVertex->setEdge(edge);
+		return;
+	}
+	else
+	{
+		// Vorherige suchen
+		e = (Edge*)baseVertex->getEdge();
+		//if (e->getWeight() > edge->getWeight()) 
+		//{
+		//	// Am Anfang einfügen
+		//	return;
+		//}
+		while (e != NULL)
+		{	
+			if (e == edge)
+				break;
+			beforeEdge = e;
+			e = e->getNext();
+		}
+		beforeEdge->setNext(edge->getNext());	// auch wenn NULL
+		edge->setNext(lastMarked->getNext());
+		lastMarked->setNext(edge);
 		return;
 	}
 	
-	last->setSecondP(edge);
+	
 
 	//if (e != NULL)	// falls e ist nicht NULL
 	//	e->setSecondP(edge->getSecondP());	// wir muessen den alten Zeiger von edge speichern
 	
-	edge->setSecondP(e);
+	if (edge != e)
+	{
+		lastMarked->setSecondP(edge);
+		edge->setSecondP(e);
+	}
 }
 
 void Graph::Cycle() {
-	Base* start = this->treeRoot;
+	Vertex* start = this->treeRoot;
 	cout << ((Vertex*)start)->getLabel() << "\t\t" << "0 km" << endl;
-	Base* last;
+	Vertex* last;
 	last = go(start);
 	cout << ((Vertex*)start)->getLabel() << "\t\t" << weightBetween(last, start) << " km" << endl;
 }
 
-Base* Graph::go(Base *vertex) {
+Vertex* Graph::go(Vertex* vertex) {
 	bool isLeave = true;
-	Base* leave = NULL;
-	Base *next;
+	Vertex* leave = NULL;
+	Vertex *next;
+	Vertex* r;
+	Edge* re;
 
-	Base *e = vertex->getSecondP();
+	Edge *e = (Edge*)vertex->getEdge();
 	
-	while (e != NULL && e->isMarked()) {
+	while (e != NULL /*&& e->isMarked()*/) {
 		if (e->isMarked()) {
 			isLeave = false;
-			next = e->getFirstP();
-			e->setMarked(false);
+			next = (Vertex*)e->getTarget();
+			e->setMarked(false);		// Fehler: die Rückkante muss auch gelöscht werde, weil sie niemals gegangen wird, ausser es gibt nur 2 Knoten
+			// Rückkante löschen
+			r = (Vertex*)e->getTarget();
+			re = (Edge*)r->getEdge();
+			while (re != NULL) 
+			{
+				if ((Vertex*)re->getTarget() == vertex)
+				{
+					re->setMarked(false);
+				}
+				re = re->getNext();
+			}
+
 			if (leave != NULL) {
 				// Abstand leave<->dieser berechnen und ausgeben
 				cout << ((Vertex*)leave)->getLabel() << "\t\t" << weightBetween(leave, next) << " km" << endl;
@@ -202,9 +249,9 @@ Base* Graph::go(Base *vertex) {
 			leave = go(next);
 		}
 		else {
-			break;		// Wenn keine markierten Kanten (mehr), zurückkehren, 
+			//break;		// Wenn keine markierten Kanten (mehr), zurückkehren, 
 		}
-		e = e->getSecondP();
+		e = e->getNext();
 	}
 	if (isLeave) {
 		return vertex;
