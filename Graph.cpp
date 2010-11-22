@@ -75,10 +75,10 @@ void Graph::setTreeRoot(Vertex* newRoot) {
 }
 
 void Graph::Prim() {
-	Base* p;
-	Base* minEdgeFromHere;
-	Base* minEdge = NULL;
-	Base* e;
+	Vertex* p;
+	Vertex* minEdgeFromHere;
+	Edge* minEdge = NULL;
+	Edge* e;
 	bool unmarkedFound = true;
 	
 	p = this->firstVertex;
@@ -124,14 +124,14 @@ void Graph::Prim() {
 		(minEdge->getFirstP())->setMarked(true);
 		
 		// Die umgekehrte Kante auch markieren (Euler-Bedingung)
-		e = minEdge->getFirstP()->getSecondP();		// Korrigiert: ->getSecondP(), da bei einer Ecke angefangen werden muss
+		e = (Edge*)minEdge->getFirstP()->getSecondP();		// Korrigiert: ->getSecondP(), da bei einer Ecke angefangen werden muss
 		while (e != NULL) {
 			if (e->getFirstP() == minEdgeFromHere) {	
 				e->setMarked(true);
 				moveEdge(minEdge->getFirstP(), e);		// Und richtig einreihen
 				break;
 			}
-			e = e->getSecondP();
+			e = e->getNext();
 		}
 	}
 }

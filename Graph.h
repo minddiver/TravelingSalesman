@@ -2,7 +2,6 @@
 #define PSEUDO NULL;
 #include "Edge.h"
 #include "Vertex.h"
-//#include "Node.h"
 
 class Graph {
 public:

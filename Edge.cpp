@@ -1,7 +1,7 @@
 #pragma once
-
 #include "Base.h"
 #include "Edge.h"
+#include "Vertex.h"
 
 Edge::Edge() {
 	this->weight = 0;

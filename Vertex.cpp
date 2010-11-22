@@ -1,5 +1,4 @@
 #pragma once
-#include "Base.h"
 #include "Vertex.h"
 
 Vertex::Vertex() {
@@ -22,19 +21,19 @@ void Vertex::setLabel(string label) {
 	this->label = label;
 }
 
-Vertex* Vertex::getNext() {
+Base* Vertex::getNext() {
 	return (Vertex*)this->getFirstP();
 }
 
-void Vertex::setNext(Vertex* next) {
+void Vertex::setNext(Base* next) {
 	this->setFirstP(next);
 }
 
-Edge* Vertex::getEdge() {
-	return (Edge*)this->getFirstP();
+Base* Vertex::getEdge() {
+	return this->getFirstP();
 }
 
-void Vertex::setEdge(Edge *edge) {
+void Vertex::setEdge(Base *edge) {
 	this->setFirstP(edge);
 }
 

@@ -1,5 +1,6 @@
 #pragma once
 #define PSEUDO NULL;
+#include "Base.h"
 using namespace std;
 
 
@@ -10,10 +11,10 @@ public:
 	Vertex(string label);
 	string getLabel();
 	void setLabel(string label);
-	Vertex* getNext();
-	void setNext(Vertex* next);
-	Edge* getEdge();
-	void setEdge(Edge* edge);
+	Base* getNext();
+	void setNext(Base* next);
+	Base* getEdge();
+	void setEdge(Base* edge);
 
 private:
 	string label;
