@@ -18,24 +18,41 @@ Graph::Graph() {
 */
 Edge * Graph::InsEdge(Vertex * v1, Vertex * v2, int weight) {
 	
+	//Base* lastEdge = v1->getSecondP();
+	//Base* newEdge = new Edge(weight);
+	//if (lastEdge != NULL) {
+	//	newEdge->setSecondP(lastEdge);
+	//}
+	//newEdge->setFirstP(v2);
+	//v1->setSecondP(newEdge);
+	//lastEdge = NULL;
+
+	//Base* lastEdge2 = v2->getSecondP();
+	//Base * newEdge2 = new Edge(weight);
+	//if (lastEdge2 != NULL) {
+	//	newEdge2->setSecondP(lastEdge2);
+	//}
+	//newEdge2->setFirstP(v1);
+	//v2->setSecondP(newEdge2);
+	//lastEdge2 = NULL;
+
+	//return (Edge*)newEdge;
+
+	Edge *NewEdge1 = new Edge(weight);
+	NewEdge1->setFirstP(v2);
 	
-	Base* lastEdge = v1->getSecondP();
-	Base* newEdge = new Edge(weight);
-	if (lastEdge != NULL) {
-		newEdge->setSecondP(lastEdge);
-	}
-	newEdge->setFirstP(v2);
-	v1->setSecondP(newEdge);
+	NewEdge1->setSecondP(v1->getSecondP());
+	v1->setSecondP(NewEdge1);
 
-	lastEdge = v2->getSecondP();
-	Base * newEdge2 = new Edge(weight);
-	if (lastEdge != NULL) {
-		newEdge2->setSecondP(lastEdge);
-	}
-	newEdge2->setFirstP(v1);
-	v2->setSecondP(newEdge2);
 
-	return (Edge*)newEdge;
+	Edge *NewEdge2 = new Edge(weight);
+	NewEdge2->setFirstP(v1);
+	
+	NewEdge2->setSecondP(v2->getSecondP());
+	v2->setSecondP(NewEdge2);
+
+	return NewEdge1;
+
 }
 
 void Graph::InsVertex(Vertex * vertex) {
@@ -98,14 +115,18 @@ void Graph::Prim() {
 			}
 			p = p->getFirstP();
 		}
+		
+		if(minEdge == NULL)	// extra ueberprfuefung, ob wir den letzten Edge erreicht hatten
+			continue;
+
 		minEdge->setMarked(true);
 		moveEdge(minEdgeFromHere, minEdge);		// Ans Ende der markierten Kanten einfügen
-		minEdge->getFirstP()->setMarked(true);
+		(minEdge->getFirstP())->setMarked(true);
 		
 		// Die umgekehrte Kante auch markieren (Euler-Bedingung)
 		e = minEdge->getFirstP()->getSecondP();		// Korrigiert: ->getSecondP(), da bei einer Ecke angefangen werden muss
 		while (e != NULL) {
-			if (e->getFirstP() == minEdgeFromHere) {
+			if (e->getFirstP() == minEdgeFromHere) {	
 				e->setMarked(true);
 				moveEdge(minEdge->getFirstP(), e);		// Und richtig einreihen
 				break;
@@ -119,11 +140,21 @@ void Graph::Prim() {
 void Graph::moveEdge(Base *baseVertex, Base *edge) {
 	Base *last = baseVertex;
 	Base *e = last->getSecondP();
-	while (e->isMarked()) {
+
+	if(last->getSecondP() == edge)	// vielleicht Edge zum Einfuegen, steht schon als erster Element in der Edge-Liste, dann muessen wir nicht tun
+	{
+		return;
+	}
+
+	while (e != NULL && e->isMarked()) {
 		last = e;
 		e = e->getSecondP();
 	}
 	last->setSecondP(edge);
+
+	if (e != NULL)	// falls e ist nicht NULL
+		e->setSecondP(edge->getSecondP());	// wir muessen den alten Zeiger von edge speichern
+	
 	edge->setSecondP(e);
 }
 
