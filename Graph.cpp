@@ -264,6 +264,7 @@ void Graph::Cycle() {
 		tmp = tmp->getFirstP();
 	}
 	
+	// Durchlauf starten
 	Base* start = this->treeRoot;
 	cout << ((Vertex*)start)->getLabel() << "\t\t" << "0 km" << endl;
 	Base* last;
