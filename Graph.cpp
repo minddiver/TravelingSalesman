@@ -73,6 +73,10 @@ void Graph::Prim() {
 	Base* minEdgeFromHere = PSEUDO;
 	Base* minEdge = PSEUDO;
 	Base* e = PSEUDO;
+	Base* lastMarkedEdgeTmp = PSEUDO;
+	Base* lastMarkedEdge = PSEUDO;
+	Base* edgeBeforeMinEdgeTmp = PSEUDO;
+	Base* edgeBeforeMinEdge = PSEUDO;
 	bool unmarkedFound = true;
 	
 	this->firstVertex->setMarked(true);
@@ -86,20 +90,38 @@ void Graph::Prim() {
 				e = p->getSecondP();
 				// kleinste Kante suchen
 				while (e != PSEUDO) {
-					// Erstmal eine beliebige als kleinste annehmen
-					if (minEdge == PSEUDO) {
-						if (!e->getFirstP()->isMarked()) {
-							minEdge = e;
-							minEdgeFromHere = p;
+					/*	Das kann das NICHT der gesuchte Kandidat sein, 
+						da nur unter nicht markierten Ecken gesucht wird.
+						(==> vorzeitiger Abbruch) */
+					if (e->isMarked())
+					{
+						lastMarkedEdge = e;			// letzte markierte Kante merken
+						edgeBeforeMinEdgeTmp = e;
+						e = e->getSecondP();		// Vorzeitiger Sprung zum nächsten Kandidaten
+						continue;
+					}
+
+					// Der 1. Kandidat ist der erst beste
+					if (minEdge == PSEUDO) {		
+						if (!e->getFirstP()->isMarked()) {			// Kandidat ausgewählt
+							// TODO: Es muss am besten der vorherige und der letzte markierte mitgespeichert werden
+							lastMarkedEdge = lastMarkedEdgeTmp;
+							edgeBeforeMinEdge = edgeBeforeMinEdgeTmp;
+							minEdge = e;							// den Kandidat speichern
+							minEdgeFromHere = p;					// Ausgangsvertex des Kandidaten speichern
 						}
 					}
 					// Vergleichen und wenn kleiner, neue kleinste Ecke setzen
 					else {
 						if ((!e->getFirstP()->isMarked()) && (((Edge*)e)->getWeight() < (((Edge*)minEdge)->getWeight()))) {
+							// TODO: Es muss am besten der vorherige und der letzte markierte mitgespeichert werden
+							lastMarkedEdge = lastMarkedEdgeTmp;
+							edgeBeforeMinEdge = edgeBeforeMinEdgeTmp;
 							minEdge = e;
 							minEdgeFromHere = p;
 						}
 					}
+					edgeBeforeMinEdgeTmp = e;
 					e = e->getSecondP();
 				}
 			}
@@ -112,26 +134,55 @@ void Graph::Prim() {
 		if(minEdge == PSEUDO)	// extra ueberprfuefung, ob wir den letzten Edge erreicht hatten
 			continue;
 
+		//moveEdge(minEdgeFromHere, lastMarkedEdge, edgeBeforeMinEdge, minEdge);		// Ans Ende der markierten Kanten einfügen
 		moveEdge(minEdgeFromHere, minEdge);		// Ans Ende der markierten Kanten einfügen
 		minEdge->setMarked(true);
 		minEdge->getFirstP()->setMarked(true);
 		
 		// Die umgekehrte Kante auch markieren (Euler-Bedingung)
 		e = minEdge->getFirstP()->getSecondP();		// Korrigiert: ->getSecondP(), da bei einer Ecke angefangen werden muss
+		lastMarkedEdgeTmp = PSEUDO;
+		edgeBeforeMinEdgeTmp = PSEUDO;
 		while (e != PSEUDO) {
+			if (e->isMarked())
+			{
+				lastMarkedEdgeTmp = e;
+				edgeBeforeMinEdgeTmp = e;
+				e = e->getSecondP();
+				continue;
+			}
+
 			if (e->getFirstP() == minEdgeFromHere) {	
+				//moveEdge(minEdge->getFirstP(), lastMarkedEdgeTmp, edgeBeforeMinEdgeTmp, e);		// Und richtig einreihen
 				moveEdge(minEdge->getFirstP(), e);		// Und richtig einreihen
 				e->setMarked(true);
 				break;
 			}
+			edgeBeforeMinEdgeTmp = e;
 			e = e->getSecondP();
 		}
 	}
 }
 
+//void Graph::moveEdge(Base* baseVertex, Base* lastMarkedEdge, Base* edgeBefore, Base* edge) {
+//	// Wenn es noch keine markierten gibt
+//	if (lastMarkedEdge == PSEUDO) 
+//	{
+//		edgeBefore->setSecondP(edge->getSecondP());
+//		edge->setSecondP(baseVertex->getSecondP());
+//		baseVertex->setSecondP(edge);
+//	}
+//	// hinter der letzten Anhängen, damit die Reihenfolge stimmt
+//	else
+//	{
+//		edgeBefore->setSecondP(edge->getSecondP());
+//		edge->setSecondP(lastMarkedEdge->getSecondP());
+//		lastMarkedEdge->setSecondP(edge);
+//	}
+//}
+
 //Verschiebt die Kante edge so, dass sie als letzte markierte Kante in der Eckenliste von baseVertex steht
 void Graph::moveEdge(Base *baseVertex, Base *edge) {
-	//Edge* lastMarkedEdge = (Edge*)baseVertex->getEdge();
 	Base* lastMarkedEdge = PSEUDO;
 	Base* e = baseVertex->getSecondP();
 	Base* beforeEdge;
@@ -167,11 +218,6 @@ void Graph::moveEdge(Base *baseVertex, Base *edge) {
 	{
 		// Vorherige suchen
 		e = baseVertex->getSecondP();
-		//if (e->getWeight() > edge->getWeight()) 
-		//{
-		//	// Am Anfang einfügen
-		//	return;
-		//}
 		while (e != PSEUDO)
 		{	
 			if (e == edge)
@@ -184,11 +230,6 @@ void Graph::moveEdge(Base *baseVertex, Base *edge) {
 		lastMarkedEdge->setSecondP(edge);
 		return;
 	}
-	
-	
-
-	//if (e != PSEUDO)	// falls e ist nicht PSEUDO
-	//	e->setSecondP(edge->getSecondP());	// wir muessen den alten Zeiger von edge speichern
 	
 	if (edge != e)
 	{
@@ -216,24 +257,11 @@ Base* Graph::go(Base* vertex) {
 
 	Base* e = vertex->getSecondP();
 	
-	while (e != PSEUDO /*&& e->isMarked()*/) {
+	while (e != PSEUDO) {
 		if (e->isMarked()) {
-			isLeave = false;
 			next = e->getFirstP();
-			
-			e->setMarked(false);		// Fehler: die Rückkante muss auch gelöscht werde, weil sie niemals gegangen wird, ausser es gibt nur 2 Knoten
-			// Rückkante löschen
-			r = e->getFirstP();
-			re = r->getSecondP();
-			while (re != PSEUDO) 
-			{
-				if (re->getFirstP() == vertex)
-				{
-					re->setMarked(false);
-				}
-				re = re->getSecondP();
-			}
 			if (next->isMarked()) {
+				isLeave = false;
 				if (leave != PSEUDO) {
 					// Abstand leave<->dieser berechnen und ausgeben
 					cout << ((Vertex*)next)->getLabel() << "\t\t" << weightBetween(leave, next) << " km" << endl;
@@ -243,7 +271,6 @@ Base* Graph::go(Base* vertex) {
 					cout << ((Vertex*)next)->getLabel() << "\t\t" << ((Edge*)e)->getWeight() << " km" << endl;		// Ausgabe der nächsten Stadt
 				}
 				leave = go(next);
-				
 			}
 		}
 		e = e->getSecondP();
@@ -264,7 +291,7 @@ int Graph::weightBetween(Base* v1, Base* v2) {
 		}
 		e = e->getSecondP();
 	}
-	cout << "WeightBetween unerwartet terminiert." << endl;
+	cout << "WeightBetween terminierte unerwartet." << endl;
 	return -1;		// sollte nicht passieren
 }
 
