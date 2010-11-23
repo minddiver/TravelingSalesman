@@ -7,7 +7,7 @@
 class Graph {
 public:
 	Graph();
-	Graph(Graph* toCopy);								//implement W
+	Graph(Graph* toCopy);								//implement W	DONE! (to be tested)
 	~Graph();
 	void InsVertex(string label);						//implement J
 	void InsEdge(string v1, string v2, int weight);		//implement J
@@ -15,7 +15,8 @@ public:
 	void setTreeRoot(string label);						//implement J
 	void Prim();
 	void Cycle();
-	Graph* copy();										//implement W
+	Graph* copy();										//implement W	DONE! (to be tested)
+	Graph operator=(Graph other);						//implement W
 
 private:
 	Base* firstVertex;

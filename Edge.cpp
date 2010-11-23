@@ -7,6 +7,7 @@ Edge::Edge() {
 Edge::Edge(Edge* toCopy)
 {
 	this->setWeight(toCopy->getWeight());
+	this->setMarked(toCopy->isMarked());
 }
 
 Edge::~Edge() {}

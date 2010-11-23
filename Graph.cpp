@@ -7,12 +7,65 @@ Graph::Graph() {
 
 Graph::Graph(Graph* toCopy)
 {
-	Vertex* v = toCopy->getFirstVertex();
-	Edge* e = v->getSecondP();
-
+	// Zunächst die Ecken kopieren
+	Base* v = toCopy->getFirstVertex();
+	if (v == PSEUDO)				// Abbruch, da leer
+		return;
+	Base* lastLocal = ((Vertex*)v)->copy();
+	this->firstVertex = lastLocal;
+	v = v->getFirstP();
 	while (v != PSEUDO) 
 	{
-		this->
+		lastLocal->setFirstP(((Vertex*)v)->copy());
+		lastLocal = lastLocal->getFirstP();
+		v = v->getFirstP();
+	}
+	// Ecken kopiert, jetzt die Kanten kopieren
+	v = toCopy->getFirstVertex();
+	Base* w = this->getFirstVertex();
+	Base* x = PSEUDO;
+	Base* y = PSEUDO;
+	Base* e = PSEUDO;
+	lastLocal = PSEUDO;
+	while (v != PSEUDO)
+	{
+		e = v->getSecondP();
+		if (e != PSEUDO)
+		{
+			w->setSecondP(((Edge*)e)->copy());
+			lastLocal = w->getSecondP();
+			e = e->getSecondP();
+			while (e != PSEUDO)
+			{
+				lastLocal->setSecondP(((Edge*)e)->copy());
+				lastLocal = lastLocal->getSecondP();
+				// Die Zielecke muss gefunden werden
+				x = this->getFirstVertex();
+				y = toCopy->getFirstVertex();
+				while (y != PSEUDO)
+				{
+					if (y == e->getFirstP())
+						break;
+					x = x->getFirstP();
+					y = y->getFirstP();
+				}
+				// Zielecke gefunden
+#ifdef DEBUG_LEVEL 
+				if (DEBUG_LEVEL > 0)
+				{
+					if (x == PSEUDO)
+					{
+						cout << "Die Zielecke wurde überraschend nicht gefunden." << endl;
+					}
+				}
+#endif
+				lastLocal->setFirstP(x);
+				e = e->getSecondP();
+			}
+		}
+		v = v->getFirstP();
+		w = w->getFirstP();
+	}
 }
 
 Graph::~Graph() {
@@ -50,7 +103,7 @@ Base* Graph::getFirstVertex()
 	in beide Richtungen gleich sind!) Dann kann man ein 2D-statisches Array verwenden, in dem
 	alle Eckenpaare vorkommen (Anzahl der Kombinationen bei n Ecken: 
 */
-Base* Graph::InsEdge(Vertex * v1, Vertex * v2, int weight) {
+void Graph::InsEdge(Vertex * v1, Vertex * v2, int weight) {
 	Edge *NewEdge1 = new Edge(weight);
 	NewEdge1->setFirstP(v2);
 	
@@ -64,7 +117,7 @@ Base* Graph::InsEdge(Vertex * v1, Vertex * v2, int weight) {
 	NewEdge2->setSecondP(v2->getSecondP());
 	v2->setSecondP(NewEdge2);
 
-	return NewEdge1;
+	return;
 
 }
 
@@ -278,3 +331,11 @@ int Graph::weightBetween(Base* v1, Base* v2) {
 	return -1;		// sollte nicht passieren
 }
 
+Graph* Graph::copy() {
+	return new Graph(this);
+}
+
+Graph Graph::operator =(Graph other)
+{
+	// TODO
+}

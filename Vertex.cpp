@@ -7,9 +7,10 @@ Vertex::Vertex() {
 Vertex::Vertex(Vertex* toCopy) 
 {
 	this->setLabel(toCopy->getLabel());
+	this->setMarked(toCopy->isMarked());
 }
 
-Vertex::~Vertex() {}
+//Vertex::~Vertex() {}
 
 Vertex::Vertex(string label) {
 	this->label = label;
