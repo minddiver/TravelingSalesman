@@ -7,15 +7,15 @@
 class Graph {
 public:
 	Graph();
-	Graph(Graph* toCopy);					//implement
+	Graph(Graph* toCopy);								//implement W
 	~Graph();
-	void InsVertex(string label);			//implement
-	void InsEdge(string v1, string v2);		//implement
-	Base* getFirstVertex();					//implement
-	void setTreeRoot(string label);			//implement
+	void InsVertex(string label);						//implement J
+	void InsEdge(string v1, string v2, int weight);		//implement J
+	Base* getFirstVertex();	
+	void setTreeRoot(string label);						//implement J
 	void Prim();
 	void Cycle();
-	Graph* copy();							//implement
+	Graph* copy();										//implement W
 
 private:
 	Base* firstVertex;
@@ -23,6 +23,7 @@ private:
 	void InsVertex(Vertex * vertex);						//change private
 	void setTreeRoot(Base* newRoot);						//change private
 	void moveEdge(Base* baseVertex, Base* lastMarkedEdge, Base* edgeBefore, Base* edge);
+	Vertex* findVertex(string label);		//implement	J
 	Base* go(Base *vertex);
 	Base* treeRoot;
 	int weightBetween(Base* v1, Base* v2);
