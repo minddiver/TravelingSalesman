@@ -68,6 +68,47 @@ Graph::Graph(Graph* toCopy)
 	}
 }
 
+void Graph::InsVertex(string label)
+{
+	// Sicherstellen dass dieses Vertex noch nicht eingefuegt war
+	if(this->findVertex(label) == PSEUDO)
+	{
+		Vertex * toBeInserted = new Vertex(label);
+		this->InsVertex(toBeInserted);
+	}
+}
+
+
+void Graph::InsEdge(string v1, string v2, int weight)
+{
+	Vertex * startVertex = this->findVertex( v1 );
+	Vertex * endVertex = this->findVertex( v2 );
+
+	if(startVertex != PSEUDO && endVertex != PSEUDO && weight > 0)
+		this->InsEdge(startVertex, endVertex, weight);
+	else
+		cout << "!!! Edge was not created! Make sure that you added Vertexes and that the weight is > 0." << endl;
+
+}
+
+
+Vertex* Graph::findVertex(string label)
+{
+	Base * iterator = this->firstVertex;
+	if(iterator != PSEUDO)
+	{
+		while(iterator->getFirstP() != PSEUDO)
+		{
+			if(((Vertex*)iterator)->getLabel() == label)
+				return (Vertex*)iterator;
+
+			iterator = iterator->getFirstP();
+		}
+	}
+	return PSEUDO;
+}
+	
+
 Graph::~Graph() {
 	Vertex* v = (Vertex*)this->firstVertex;
 	Edge* e = PSEUDO;
@@ -125,6 +166,16 @@ void Graph::InsVertex(Vertex * vertex) {
 	Base* second = this->firstVertex;
 	this->firstVertex = vertex;
 	vertex->setFirstP(second);
+}
+
+void Graph::setTreeRoot(string label)
+{
+	Vertex * newRoot = this->findVertex(label);
+
+	if(newRoot != PSEUDO)
+		this->setTreeRoot(newRoot);
+	else
+		cout << "!!! The Vertex could not be found! Tree root was not set." << endl;
 }
 
 

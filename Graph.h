@@ -9,10 +9,10 @@ public:
 	Graph();
 	Graph(Graph* toCopy);								//implement W	DONE! (to be tested)
 	~Graph();
-	void InsVertex(string label);						//implement J
-	void InsEdge(string v1, string v2, int weight);		//implement J
+	void InsVertex(string label);						//implement J   DONE!
+	void InsEdge(string v1, string v2, int weight);		//implement J   DONE!
 	Base* getFirstVertex();	
-	void setTreeRoot(string label);						//implement J
+	void setTreeRoot(string label);						//implement J   DONE!
 	void Prim();
 	void Cycle();
 	Graph* copy();										//implement W	DONE! (to be tested)
@@ -24,7 +24,7 @@ private:
 	void InsVertex(Vertex * vertex);						//change private
 	void setTreeRoot(Base* newRoot);						//change private
 	void moveEdge(Base* baseVertex, Base* lastMarkedEdge, Base* edgeBefore, Base* edge);
-	Vertex* findVertex(string label);		//implement	J
+	Vertex* findVertex(string label);						//implement	J   DONE!
 	Base* go(Base *vertex);
 	Base* treeRoot;
 	int weightBetween(Base* v1, Base* v2);

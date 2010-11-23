@@ -22,3 +22,6 @@ Handlungsreisender.suo
 /_UpgradeReport_Files
 /UpgradeLog.XML
 /Handlungsreisender.sdf
+
+*.sdf
+*.opensdf
