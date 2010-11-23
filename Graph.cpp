@@ -1,11 +1,98 @@
-#pragma once
 #include "Graph.h"
-#define PSEUDO NULL;
 
 Graph::Graph() {
 	this->firstVertex = PSEUDO;
-	//this->treeRoot = PSEUDO;
+	this->treeRoot = PSEUDO;
 }
+
+Graph::Graph(Graph* toCopy)
+{
+	// Zunächst die Ecken kopieren
+	Base* v = toCopy->getFirstVertex();
+	if (v == PSEUDO)				// Abbruch, da leer
+		return;
+	Base* lastLocal = ((Vertex*)v)->copy();
+	this->firstVertex = lastLocal;
+	v = v->getFirstP();
+	while (v != PSEUDO) 
+	{
+		lastLocal->setFirstP(((Vertex*)v)->copy());
+		lastLocal = lastLocal->getFirstP();
+		v = v->getFirstP();
+	}
+	// Ecken kopiert, jetzt die Kanten kopieren
+	v = toCopy->getFirstVertex();
+	Base* w = this->getFirstVertex();
+	Base* x = PSEUDO;
+	Base* y = PSEUDO;
+	Base* e = PSEUDO;
+	lastLocal = PSEUDO;
+	while (v != PSEUDO)
+	{
+		e = v->getSecondP();
+		if (e != PSEUDO)
+		{
+			w->setSecondP(((Edge*)e)->copy());
+			lastLocal = w->getSecondP();
+			e = e->getSecondP();
+			while (e != PSEUDO)
+			{
+				lastLocal->setSecondP(((Edge*)e)->copy());
+				lastLocal = lastLocal->getSecondP();
+				// Die Zielecke muss gefunden werden
+				x = this->getFirstVertex();
+				y = toCopy->getFirstVertex();
+				while (y != PSEUDO)
+				{
+					if (y == e->getFirstP())
+						break;
+					x = x->getFirstP();
+					y = y->getFirstP();
+				}
+				// Zielecke gefunden
+#ifdef DEBUG_LEVEL 
+				if (DEBUG_LEVEL > 0)
+				{
+					if (x == PSEUDO)
+					{
+						cout << "Die Zielecke wurde überraschend nicht gefunden." << endl;
+					}
+				}
+#endif
+				lastLocal->setFirstP(x);
+				e = e->getSecondP();
+			}
+		}
+		v = v->getFirstP();
+		w = w->getFirstP();
+	}
+}
+
+Graph::~Graph() {
+	Vertex* v = (Vertex*)this->firstVertex;
+	Edge* e = PSEUDO;
+	Edge* nextE = e;
+	Vertex* nextV = PSEUDO;
+
+	while (v != PSEUDO) 
+	{
+		nextV = (Vertex*)v->getFirstP();
+		
+		Edge* e = (Edge*)v->getSecondP();
+		while (e != PSEUDO) 
+		{
+			nextE = (Edge*)e->getSecondP();
+			delete e;
+		}
+		delete v;
+	}
+}
+
+Base* Graph::getFirstVertex()
+{
+	return this->firstVertex;
+}
+
 
 /*	Es muss sichergestellt sein, dass beide Vertices bereits im Graph 
 	enthalten sind. Ferner darf die Kante noch nicht existieren. (Performance!)
@@ -16,80 +103,92 @@ Graph::Graph() {
 	in beide Richtungen gleich sind!) Dann kann man ein 2D-statisches Array verwenden, in dem
 	alle Eckenpaare vorkommen (Anzahl der Kombinationen bei n Ecken: 
 */
-Edge * Graph::InsEdge(Vertex * v1, Vertex * v2, int weight) {
+void Graph::InsEdge(Vertex * v1, Vertex * v2, int weight) {
+	Edge *NewEdge1 = new Edge(weight);
+	NewEdge1->setFirstP(v2);
 	
+	NewEdge1->setSecondP(v1->getSecondP());
+	v1->setSecondP(NewEdge1);
+
+
+	Edge *NewEdge2 = new Edge(weight);
+	NewEdge2->setFirstP(v1);
 	
-	Base* lastEdge = v1->getSecondP();
-	Base* newEdge = new Edge(weight);
-	if (lastEdge != NULL) {
-		newEdge->setSecondP(lastEdge);
-	}
-	newEdge->setFirstP(v2);
-	v1->setSecondP(newEdge);
+	NewEdge2->setSecondP(v2->getSecondP());
+	v2->setSecondP(NewEdge2);
 
-	lastEdge = v2->getSecondP();
-	Base * newEdge2 = new Edge(weight);
-	if (lastEdge != NULL) {
-		newEdge2->setSecondP(lastEdge);
-	}
-	newEdge2->setFirstP(v1);
-	v2->setSecondP(newEdge2);
+	return;
 
-	return (Edge*)newEdge;
 }
 
 void Graph::InsVertex(Vertex * vertex) {
-	if (this->firstVertex == NULL)
-		this->firstVertex = vertex;
-	else {
-		Vertex * tmp = this->firstVertex;
-		this->firstVertex = vertex;
-		vertex->setFirstP(tmp);
-	}
+	Base* second = this->firstVertex;
+	this->firstVertex = vertex;
+	vertex->setFirstP(second);
 }
 
 
-Graph::~Graph() {
-	// TBD: Alle erzeugten Strukturen löschen
-}
-
-void Graph::setTreeRoot(Vertex* newRoot) {
+void Graph::setTreeRoot(Base* newRoot) {
 	this->treeRoot = newRoot;
 }
 
 void Graph::Prim() {
-	Base* p;
-	Base* minEdgeFromHere;
-	Base* minEdge = NULL;
-	Base* e;
+	Base* p = PSEUDO;
+	Base* minEdgeFromHere = PSEUDO;
+	Base* minEdge = PSEUDO;
+	Base* e = PSEUDO;
+	Base* lastMarkedEdgeTmp = PSEUDO;
+	Base* lastMarkedEdge = PSEUDO;
+	Base* edgeBeforeMinEdgeTmp = PSEUDO;
+	Base* edgeBeforeMinEdge = PSEUDO;
 	bool unmarkedFound = true;
 	
-	p = this->firstVertex;
-	p->setMarked(true);
+	this->firstVertex->setMarked(true);
 	
 	while (unmarkedFound) {
 		unmarkedFound = false;
+		// Kleinste Kante suchen, die den Baum erweitern würde
 		p = this->firstVertex;
-		minEdge = NULL;		// Korrigiert: reset!
-		while (p != NULL) {
+		minEdge = PSEUDO;		// Korrigiert: reset!
+		lastMarkedEdgeTmp = PSEUDO;
+		edgeBeforeMinEdgeTmp = PSEUDO;
+		lastMarkedEdge = PSEUDO;
+		edgeBeforeMinEdge = PSEUDO;
+		while (p != PSEUDO) {	// Es wird die komplette Liste durchlaufen
 			if (p->isMarked()) {	
 				e = p->getSecondP();
 				// kleinste Kante suchen
-				while (e != NULL) {
-					// Erstmal eine beliebige als kleinste annehmen
-					if (minEdge == NULL) {
-						if (!e->getFirstP()->isMarked()) {
-							minEdge = e;
-							minEdgeFromHere = p;
+				while (e != PSEUDO) {
+					/*	Das kann NICHT der gesuchte Kandidat sein, 
+						da nur unter nicht markierten Ecken gesucht wird.
+						(==> vorzeitiger Abbruch) */
+					if (e->isMarked())
+					{
+						lastMarkedEdge = e;			// letzte markierte Kante merken
+						edgeBeforeMinEdgeTmp = e;
+						e = e->getSecondP();		// Vorzeitiger Sprung zum nächsten Kandidaten
+						continue;
+					}
+
+					// Der 1. Kandidat ist der erst beste
+					if (minEdge == PSEUDO) {		
+						if (!e->getFirstP()->isMarked()) {			// Kandidat ausgewählt
+							lastMarkedEdge = lastMarkedEdgeTmp;			// Letzte markierte Ecke in der Eckenliste speichern
+							edgeBeforeMinEdge = edgeBeforeMinEdgeTmp;	// Die Kante vor dem Kandidaten speichern
+							minEdge = e;							// den Kandidat speichern
+							minEdgeFromHere = p;					// Ausgangsvertex des Kandidaten speichern
 						}
 					}
-					// Vergleichen und wenn kleiner, neue kleinste Ecke setzen
+					// Sonst vergleichen und wenn kleiner, neue kleinste Ecke setzen
 					else {
-						if ((!e->getFirstP()->isMarked()) && (((Edge*)e)->getWeight() < ((Edge*)minEdge)->getWeight())) {
+						if ((!e->getFirstP()->isMarked()) && (((Edge*)e)->getWeight() < (((Edge*)minEdge)->getWeight()))) {
+							lastMarkedEdge = lastMarkedEdgeTmp;
+							edgeBeforeMinEdge = edgeBeforeMinEdgeTmp;
 							minEdge = e;
 							minEdgeFromHere = p;
 						}
 					}
+					edgeBeforeMinEdgeTmp = e;
 					e = e->getSecondP();
 				}
 			}
@@ -98,65 +197,116 @@ void Graph::Prim() {
 			}
 			p = p->getFirstP();
 		}
+		
+		if(minEdge == PSEUDO)	// extra ueberprfuefung, ob wir den letzten Edge erreicht hatten
+			continue;
+
+		moveEdge(minEdgeFromHere, lastMarkedEdge, edgeBeforeMinEdge, minEdge);		// Ans Ende der markierten Kanten einfügen
+		//moveEdge(minEdgeFromHere, minEdge);		// Ans Ende der markierten Kanten einfügen
 		minEdge->setMarked(true);
-		moveEdge(minEdgeFromHere, minEdge);		// Ans Ende der markierten Kanten einfügen
 		minEdge->getFirstP()->setMarked(true);
 		
 		// Die umgekehrte Kante auch markieren (Euler-Bedingung)
 		e = minEdge->getFirstP()->getSecondP();		// Korrigiert: ->getSecondP(), da bei einer Ecke angefangen werden muss
-		while (e != NULL) {
-			if (e->getFirstP() == minEdgeFromHere) {
+		lastMarkedEdgeTmp = PSEUDO;
+		edgeBeforeMinEdgeTmp = PSEUDO;
+		while (e != PSEUDO) {
+			if (e->isMarked())
+			{
+				lastMarkedEdgeTmp = e;
+				edgeBeforeMinEdgeTmp = e;
+				e = e->getSecondP();
+				continue;
+			}
+
+			if (e->getFirstP() == minEdgeFromHere) {	
+				moveEdge(minEdge->getFirstP(), lastMarkedEdgeTmp, edgeBeforeMinEdgeTmp, e);		// Und richtig einreihen
+				//moveEdge(minEdge->getFirstP(), e);		// Und richtig einreihen
 				e->setMarked(true);
-				moveEdge(minEdge->getFirstP(), e);		// Und richtig einreihen
 				break;
 			}
+			edgeBeforeMinEdgeTmp = e;
 			e = e->getSecondP();
 		}
+		lastMarkedEdgeTmp = PSEUDO;
+		edgeBeforeMinEdgeTmp = PSEUDO;
+		lastMarkedEdge = PSEUDO;
+		edgeBeforeMinEdge = PSEUDO;
 	}
 }
 
-//Verschiebt die Kante edge so, dass sie als letzte markierte Kante in der Eckenliste von baseVertex steht
-void Graph::moveEdge(Base *baseVertex, Base *edge) {
-	Base *last = baseVertex;
-	Base *e = last->getSecondP();
-	while (e->isMarked()) {
-		last = e;
-		e = e->getSecondP();
+void Graph::moveEdge(Base* baseVertex, Base* lastMarkedEdge, Base* edgeBefore, Base* edge) {
+	// Wenn es schon vorne eingereiht ist, zurückkehren
+	if (edgeBefore == PSEUDO)
+		return;
+	// Wenn es noch keine markierten gibt
+	if (lastMarkedEdge == PSEUDO) 
+	{
+		edgeBefore->setSecondP(edge->getSecondP());
+		edge->setSecondP(baseVertex->getSecondP());
+		baseVertex->setSecondP(edge);
 	}
-	last->setSecondP(edge);
-	edge->setSecondP(e);
+	// hinter der letzten Anhängen, damit die Reihenfolge stimmt
+	else
+	{
+		edgeBefore->setSecondP(edge->getSecondP());
+		edge->setSecondP(lastMarkedEdge->getSecondP());
+		lastMarkedEdge->setSecondP(edge);
+	}
 }
+
 
 void Graph::Cycle() {
+	 /*Wenn Prim schon mal aufgerufen wurde, kann Cycle beliebig oft aufgerufen werden,
+	 vorausgesetzt die Startbedingungen sind erfüllt.
+	 Die Startbedingungen sind zum einen die Menge an markierten Kanten, die den
+	 MST aufspannen, zum anderen die Ecken selbst. Da go() am Anfang alle Ecken des MST 
+	 als markiert erwartet und dann die Markierungen entfernt, 
+	 müssen (alle) Ecken markiert werden. Man kann davon ausgehen, 
+	 dass alle Ecken des Graphen auch zum MST gehören, sonst wäre es kein MST!
+	 Kanten bleiben nach dem Lauf markiert.*/
+	Base* tmp = this->firstVertex;
+	while (tmp != PSEUDO)
+	{
+		tmp->setMarked(true);
+		tmp = tmp->getFirstP();
+	}
+	
+	// Durchlauf starten
 	Base* start = this->treeRoot;
-	cout << ((Vertex*)start)->getLabel() << "   " << "0 km" << endl;
+	cout << ((Vertex*)start)->getLabel() << "\t\t" << "0 km" << endl;
 	Base* last;
 	last = go(start);
-	cout << ((Vertex*)start)->getLabel() << "   " << weightBetween(last, start) << " km" << endl;
+	cout << ((Vertex*)start)->getLabel() << "\t\t" << weightBetween(last, start) << " km" << endl;
 }
 
-Base* Graph::go(Base *vertex) {
+Base* Graph::go(Base* vertex) {
 	bool isLeave = true;
-	Base* leave = NULL;
+	Base* leave = PSEUDO;
 	Base *next;
+	Base* e = vertex->getSecondP();
 
-	Base *e = vertex->getSecondP();
-	
-	while (e->isMarked()) {
+	if (DEBUG_LEVEL > 0)
+		cout << "Gone to " << ((Vertex*)vertex)->getLabel() << endl;
+
+	vertex->setMarked(false);	// Ecke als besucht markieren
+
+	while (e != PSEUDO) {
 		if (e->isMarked()) {
-			isLeave = false;
 			next = e->getFirstP();
-			e->setMarked(false);
-			if (leave != NULL) {
-				// Abstand leave<->dieser berechnen und ausgeben
-				cout << ((Vertex*)leave)->getLabel() << "   " << weightBetween(leave, next) << " km" << endl;
-				leave = NULL;
+			if (next->isMarked()) {
+				isLeave = false;
+				if (leave != PSEUDO) {
+					// Abstand leave<->nächster berechnen und ausgeben
+					cout << ((Vertex*)next)->getLabel() << "\t\t" << weightBetween(leave, next) << " km" << endl;
+					leave = PSEUDO;
+				}
+				else {
+					// Abstand dieser<->nächster berechnen und ausgeben
+					cout << ((Vertex*)next)->getLabel() << "\t\t" << ((Edge*)e)->getWeight() << " km" << endl;		// Ausgabe der nächsten Stadt
+				}
+				leave = go(next);
 			}
-			cout << ((Vertex*)next)->getLabel() << "   " << ((Edge*)e)->getWeight() << " km" << endl;		// Ausgabe der nächsten Stadt
-			leave = go(next);
-		}
-		else {
-			break;		// Wenn keine markierten Kanten (mehr), zurückkehren, 
 		}
 		e = e->getSecondP();
 	}
@@ -170,12 +320,22 @@ Base* Graph::go(Base *vertex) {
 
 int Graph::weightBetween(Base* v1, Base* v2) {
 	Base* e = v1->getSecondP();
-	while (e != NULL) {
+	while (e != PSEUDO) {
 		if (e->getFirstP() == v2) {
 			return ((Edge*)e)->getWeight();
 		}
 		e = e->getSecondP();
 	}
+	if (DEBUG_LEVEL > 0)
+		cout << "WeightBetween terminierte unerwartet." << endl;
 	return -1;		// sollte nicht passieren
 }
 
+Graph* Graph::copy() {
+	return new Graph(this);
+}
+
+Graph Graph::operator =(Graph other)
+{
+	// TODO
+}

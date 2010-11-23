@@ -7,4 +7,13 @@ Handlungsreisender.suo
 *.ncb
 *.suo
 *.user
->>>>>>> 0bfa829ded1b20282f7ad7886f63a15397180d03
+
+/.gitignore.BASE.gitignore
+/.gitignore.LOCAL.gitignore
+/.gitignore.REMOTE.gitignore
+/Graph.cpp.BASE.cpp
+/Graph.cpp.LOCAL.cpp
+/Graph.cpp.REMOTE.cpp
+/Vertex.h.BASE.h
+/Vertex.h.LOCAL.h
+/Vertex.h.REMOTE.h

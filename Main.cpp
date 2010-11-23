@@ -2,23 +2,56 @@
 #include "Graph.h"
 #include <stdio.h>
 #include <vector>
+using namespace std;
 
 int main() {
 	Graph * grrr = new Graph();
-
-	//Vertex * v1 = new Vertex("Bla1");
-	//Vertex * v2 = new Vertex("Bla2");
-	//Vertex * v3 = new Vertex("Bla3");
+	
+	// automatische Erzeugung des Graphen
+	
+	//Vertex* v1 = new Vertex("A");
+	//Vertex* v2 = new Vertex("B");
+	//Vertex* v3 = new Vertex("C");
+	//Vertex* v4 = new Vertex("D");
+	//Vertex* v5 = new Vertex("E");
+	//Vertex* v6 = new Vertex("F");
 	//grrr->InsVertex(v1);
 	//grrr->InsVertex(v2);
 	//grrr->InsVertex(v3);
-	//Edge * e1 = grrr->InsEdge(v1,v2,1);
-	//Edge * e2 = grrr->InsEdge(v1,v3,2);
-	//Edge * e3 = grrr->InsEdge(v2,v3,3);
+	//grrr->InsVertex(v4);
+	//grrr->InsVertex(v5);
+	//grrr->InsVertex(v6);
+	//Base* e1 = grrr->InsEdge(v1, v2, 60);
+	//Base* e2 = grrr->InsEdge(v1, v3, 50);
+	//grrr->InsEdge(v1, v4, 63);
+	//grrr->InsEdge(v1, v5, 57);
+	//grrr->InsEdge(v1, v6, 84);
+	//Base* e3 = grrr->InsEdge(v2, v3, 32);
+	//grrr->InsEdge(v2, v4, 103);
+	//grrr->InsEdge(v2, v5, 56);
+	//grrr->InsEdge(v2, v6, 83);
+	//grrr->InsEdge(v3, v4, 84);	
+	//grrr->InsEdge(v3, v5, 75);
+	//grrr->InsEdge(v3, v6, 53);
+	//grrr->InsEdge(v4, v5, 120);
+	//grrr->InsEdge(v4, v6, 61);
+	//grrr->InsEdge(v5, v6, 126);
 	//grrr->Prim();
+	//grrr->setTreeRoot(v5);
+	//grrr->Cycle();
+
+	//
+	//// wait before close trick
+	//int aa;
+	//cin >> aa;
+	//return 0;
+	
+/***********************************************************************/
+	// manuelle Erzeugung
 
 	vector<Vertex*> * vertexes = new vector<Vertex*>();
 	int opt = 0;
+	int newRootId = 0;
 	int tempWeight = 0;
 	bool primCalled = false;
 
@@ -28,6 +61,7 @@ int main() {
 	Vertex * tempV;
 	string vertexName;
 	string tempName;
+
 
 	cout << "Welcome to the Traveling Salesman Problem Solver!" << endl;
 	while (true){
@@ -75,7 +109,7 @@ int main() {
 						if(i < j)
 						{
 							cout << "(" << entriesCounter << "/" << entriesTotal << ")  Weight for:  Vertex" <<
-								i+1 << " ( " << vertexes->at(i)->getLabel() << " } and Vertex" <<
+								i+1 << " ( " << vertexes->at(i)->getLabel() << " ) and Vertex" <<
 								j+1 << " ( " << vertexes->at(j)->getLabel() << " ): ";
 							cin >> tempWeight;
 							
@@ -107,13 +141,13 @@ int main() {
 						cout << i+1 << ": " << vertexes->at(i)->getLabel() << endl;
 					}
 					cout << "Choose the root of the tree: ";
-					cin >> opt;
+					cin >> newRootId;
 
 					// make sure thaat the index is inside of vector
-					if((unsigned int)opt - 1 < vertexes->size() || opt - 1 >= 0)
+					if((unsigned int)newRootId - 1 < vertexes->size() || newRootId - 1 >= 0)
 					{
 						cout << "Calling Cycle() function..." << endl;
-						grrr->setTreeRoot( vertexes->at(opt-1) );
+						grrr->setTreeRoot( vertexes->at(newRootId-1) );
 						grrr->Cycle();
 						cout << endl << "Cycle() called successfully." << endl;
 					}
@@ -134,5 +168,8 @@ int main() {
 				break;
 		}
 	}
+
+/******************************************************************************************************/
+	
 	return 0;
 }
