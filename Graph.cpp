@@ -2,8 +2,44 @@
 
 Graph::Graph() {
 	this->firstVertex = PSEUDO;
-	//this->treeRoot = PSEUDO;
+	this->treeRoot = PSEUDO;
 }
+
+Graph::Graph(Graph* toCopy)
+{
+	Vertex* v = toCopy->getFirstVertex();
+	Edge* e = v->getSecondP();
+
+	while (v != PSEUDO) 
+	{
+		this->
+}
+
+Graph::~Graph() {
+	Vertex* v = (Vertex*)this->firstVertex;
+	Edge* e = PSEUDO;
+	Edge* nextE = e;
+	Vertex* nextV = PSEUDO;
+
+	while (v != PSEUDO) 
+	{
+		nextV = (Vertex*)v->getFirstP();
+		
+		Edge* e = (Edge*)v->getSecondP();
+		while (e != PSEUDO) 
+		{
+			nextE = (Edge*)e->getSecondP();
+			delete e;
+		}
+		delete v;
+	}
+}
+
+Base* Graph::getFirstVertex()
+{
+	return this->firstVertex;
+}
+
 
 /*	Es muss sichergestellt sein, dass beide Vertices bereits im Graph 
 	enthalten sind. Ferner darf die Kante noch nicht existieren. (Performance!)
@@ -15,27 +51,6 @@ Graph::Graph() {
 	alle Eckenpaare vorkommen (Anzahl der Kombinationen bei n Ecken: 
 */
 Base* Graph::InsEdge(Vertex * v1, Vertex * v2, int weight) {
-	
-	//Base* lastEdge = v1->getSecondP();
-	//Base* newEdge = new Edge(weight);
-	//if (lastEdge != PSEUDO) {
-	//	newEdge->setSecondP(lastEdge);
-	//}
-	//newEdge->setFirstP(v2);
-	//v1->setSecondP(newEdge);
-	//lastEdge = PSEUDO;
-
-	//Base* lastEdge2 = v2->getSecondP();
-	//Base * newEdge2 = new Edge(weight);
-	//if (lastEdge2 != PSEUDO) {
-	//	newEdge2->setSecondP(lastEdge2);
-	//}
-	//newEdge2->setFirstP(v1);
-	//v2->setSecondP(newEdge2);
-	//lastEdge2 = PSEUDO;
-
-	//return (Edge*)newEdge;
-
 	Edge *NewEdge1 = new Edge(weight);
 	NewEdge1->setFirstP(v2);
 	
@@ -59,10 +74,6 @@ void Graph::InsVertex(Vertex * vertex) {
 	vertex->setFirstP(second);
 }
 
-
-Graph::~Graph() {
-	delete this->firstVertex;
-}
 
 void Graph::setTreeRoot(Base* newRoot) {
 	this->treeRoot = newRoot;
@@ -191,62 +202,6 @@ void Graph::moveEdge(Base* baseVertex, Base* lastMarkedEdge, Base* edgeBefore, B
 	}
 }
 
-//Verschiebt die Kante edge so, dass sie als letzte markierte Kante in der Eckenliste von baseVertex steht
-//void Graph::moveEdge(Base *baseVertex, Base *edge) {
-//	Base* lastMarkedEdge = PSEUDO;
-//	Base* e = baseVertex->getSecondP();
-//	Base* beforeEdge;
-//	
-//	/*vielleicht Edge zum Einfuegen, steht schon als erster 
-//	Element in der Edge-Liste, dann muessen wir nicht tun*/
-//	if(e == edge)	// 
-//	{
-//		return;
-//	}
-//
-//	while (e != PSEUDO && e->isMarked() && ((Edge*)e)->getWeight() < ((Edge*)edge)->getWeight() ) {
-//		lastMarkedEdge = e;
-//		e = e->getSecondP();
-//	}
-//
-//	if (lastMarkedEdge == PSEUDO)		// keine markierten Kanten
-//	{
-//		// Vorherige suchen
-//		while (e != PSEUDO)
-//		{	
-//			if (e == edge)
-//				break;
-//			beforeEdge = e;
-//			e = e->getSecondP();
-//		}
-//		beforeEdge->setSecondP(edge->getSecondP());	// auch wenn PSEUDO
-//		edge->setSecondP(baseVertex->getSecondP());
-//		baseVertex->setSecondP(edge);
-//		return;
-//	}
-//	else
-//	{
-//		// Vorherige suchen
-//		e = baseVertex->getSecondP();
-//		while (e != PSEUDO)
-//		{	
-//			if (e == edge)
-//				break;
-//			beforeEdge = e;
-//			e = e->getSecondP();
-//		}
-//		beforeEdge->setSecondP(edge->getSecondP());	// auch wenn PSEUDO
-//		edge->setSecondP(lastMarkedEdge->getSecondP());
-//		lastMarkedEdge->setSecondP(edge);
-//		return;
-//	}
-//	
-//	if (edge != e)
-//	{
-//		lastMarkedEdge->setSecondP(edge);
-//		edge->setSecondP(e);
-//	}
-//}
 
 void Graph::Cycle() {
 	 /*Wenn Prim schon mal aufgerufen wurde, kann Cycle beliebig oft aufgerufen werden,

@@ -6,13 +6,7 @@ Base::Base() {
 	this->mark = false;
 }
 
-Base::~Base() {
-	if(this->firstP != PSEUDO)
-		delete this->firstP;
-
-	if(this->secondP != PSEUDO)
-		delete this->secondP;
-}
+Base::~Base() {}
 
 Base* Base::getFirstP() {
 	return this->firstP;
