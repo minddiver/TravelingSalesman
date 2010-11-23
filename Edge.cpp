@@ -15,19 +15,3 @@ int Edge::getWeight() {
 void Edge::setWeight(int weight) {
 	this->weight = weight;
 }
-//
-//Base* Edge::getNext() {
-//	return this->getSecondP();
-//}
-//
-//void Edge::setNext(Base* next) {
-//	this->setSecondP(next);
-//}
-//
-//Base* Edge::getTarget() {
-//	return this->getFirstP();
-//}
-//
-//void Edge::setTarget(Base* target) {
-//	this->setFirstP(target);
-//}
