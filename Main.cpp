@@ -6,7 +6,8 @@ using namespace std;
 
 int main() {
 	Graph * grrr = new Graph();
-
+	
+	// automatische Erzeugung des Graphen
 	
 	//Vertex* v1 = new Vertex("A");
 	//Vertex* v2 = new Vertex("B");
@@ -46,6 +47,7 @@ int main() {
 	//return 0;
 	
 /***********************************************************************/
+	// manuelle Erzeugung
 
 	vector<Vertex*> * vertexes = new vector<Vertex*>();
 	int opt = 0;

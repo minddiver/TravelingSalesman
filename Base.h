@@ -4,6 +4,7 @@
 #include <string>
 
 #define PSEUDO NULL
+#define DEBUG_LEVEL 0
 
 using namespace std;
 

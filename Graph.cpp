@@ -249,14 +249,14 @@ void Graph::moveEdge(Base* baseVertex, Base* lastMarkedEdge, Base* edgeBefore, B
 //}
 
 void Graph::Cycle() {
-	// Wenn Prim schon mal aufgerufen wurde, kann Cycle beliebig oft aufgerufen werden,
-	// vorausgesetzt die Startbedingungen sind erfüllt.
-	// Die Startbedingungen sind zum einen die Menge an markierten Kanten, die den
-	// MST aufspannen, zum anderen die Ecken selbst. Da go() am Anfang alle Ecken des MST 
-	// als markiert erwartet und dann die Markierungen entfernt, 
-	// müssen (alle) Ecken markiert werden. Man kann davon ausgehen, 
-	// dass alle Ecken des Graphen auch zum MST gehören, sonst wäre es kein MST!
-	// Kanten bleiben nach dem Lauf markiert.
+	 /*Wenn Prim schon mal aufgerufen wurde, kann Cycle beliebig oft aufgerufen werden,
+	 vorausgesetzt die Startbedingungen sind erfüllt.
+	 Die Startbedingungen sind zum einen die Menge an markierten Kanten, die den
+	 MST aufspannen, zum anderen die Ecken selbst. Da go() am Anfang alle Ecken des MST 
+	 als markiert erwartet und dann die Markierungen entfernt, 
+	 müssen (alle) Ecken markiert werden. Man kann davon ausgehen, 
+	 dass alle Ecken des Graphen auch zum MST gehören, sonst wäre es kein MST!
+	 Kanten bleiben nach dem Lauf markiert.*/
 	Base* tmp = this->firstVertex;
 	while (tmp != PSEUDO)
 	{
@@ -277,6 +277,9 @@ Base* Graph::go(Base* vertex) {
 	Base* leave = PSEUDO;
 	Base *next;
 	Base* e = vertex->getSecondP();
+
+	if (DEBUG_LEVEL > 0)
+		cout << "Gone to " << ((Vertex*)vertex)->getLabel() << endl;
 
 	vertex->setMarked(false);	// Ecke als besucht markieren
 
@@ -315,7 +318,8 @@ int Graph::weightBetween(Base* v1, Base* v2) {
 		}
 		e = e->getSecondP();
 	}
-	cout << "WeightBetween terminierte unerwartet." << endl;
+	if (DEBUG_LEVEL > 0)
+		cout << "WeightBetween terminierte unerwartet." << endl;
 	return -1;		// sollte nicht passieren
 }
 
